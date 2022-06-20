@@ -114,7 +114,7 @@ function Navbar() {
       //const cartQuantity = useSelector(state => state.cart.quantity)
       const cartProductss = useSelector(state => state.cart.quantity)
       const user = useSelector(state => state.user.currentUser);
-      console.log(user)
+      console.log(`user : ${user}`)
   return (
     <Container>
         <Wrapper>

@@ -6,7 +6,6 @@ const userSlice = createSlice({
         currentUser: null ,
         isFetching: false,
         isError: false,
-        isSignupError: false,
         error: null
     },
     reducers: {
@@ -32,8 +31,7 @@ const userSlice = createSlice({
 
         Failed: (state, action) => {
             state.isFetching = false;
-            state.isError = true;
-            state.error = action.payload;
+            state.isError = action.payload;
             
         },
         
@@ -52,7 +50,6 @@ const userSlice = createSlice({
         },
         signupFailed: (state, action) => {
             state.isFetching = false;
-            state.isSignupError = true;
             state.error = action.payload;
             
         },

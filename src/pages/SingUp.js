@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import Navbar from '../components/Navbar'
 import { mobile } from '../Responsive'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { signUp } from '../redux/apiCalls'
 
@@ -24,15 +24,14 @@ const Container = styled.div`
     
 `
 const Wrapper = styled.div`
-    width: 40%;
+    width: min(400px, 90%);
     padding: 30px 20px;
     background-color: white;
     display: flex;
     flex-direction: column;
-    border-radius: 5%;
-    ${mobile({
-      minWidth: "80%",
-    })}
+    border-radius: 1vmax;
+    box-shadow: 20px 20px 50px grey;
+    
     
 `
 const Title = styled.h1`
@@ -47,11 +46,11 @@ const Form = styled.form`
 
 
 const Input = styled.input`
-  min-width: 40%;
+  width: min(370px, 100%);
+
   padding: 10px;
   margin: 20px 10px 0px 0px;
-  flex: 1;
-  display: flex;
+  border-radius: 0.5vmax;
   min-height: 40%;
   ${mobile({
     minWidth: "50%",
@@ -78,10 +77,12 @@ const Button = styled.button`
   }
 `
 
-const HelpLink = styled.a`
+const HelpLink = styled.label`
     margin: 5px 0px;
     text-decoration: underline;
     cursor: pointer;
+    width: fit-content;
+    display: inline;
     
 `
 
@@ -92,9 +93,10 @@ const Error = styled.span`
 const FormValidationError = styled.p`
   color: red;
   width: 100%;
+  margin-bottom: 1px;
 `
 
-const signupSuccessDiv = styled.h1`
+const SignupSuccessDiv = styled.h1`
   color: green;
   justify-content: center;
   align-items: center;
@@ -130,13 +132,14 @@ function SingUp(props) {
     if (Object.keys(formErrors).length === 0 && isSubmit) {
       signUp(dispatch, formValues);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formErrors])
   
 
   const handleValidate = (values) => {
     
     const error = {};
-    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
     if(!values.firstName) {
       error.firstName = "firstName is requires";
     } 
@@ -162,7 +165,7 @@ function SingUp(props) {
   }
   // const dispatch = useDispatch();
   // const navigate = useNavigate()
-  const { isFetching, isSignupError, signupSuccess, error} = useSelector(state => state.user)
+  const { isFetching, signupSuccess, error} = useSelector(state => state.user)
 
   // const handleClick = (e) => {
   //   e.preventDefault();
@@ -184,9 +187,9 @@ function SingUp(props) {
     <>
     <Navbar/>
     <Container>
-      {signupSuccess ? <signupSuccessDiv>Signup Successfull!</signupSuccessDiv> : 
+      {signupSuccess ? <SignupSuccessDiv>Signup Successfull!</SignupSuccessDiv> : 
       <Wrapper>
-          <Title>Title</Title>
+          <Title>Sign Up</Title>
           <Form onSubmit={handleSubmit}>
             <Input name='firstName' placeholder='Name' onChange={handleOnChange}/>
             <FormValidationError>{formErrors.firstName}</FormValidationError>
@@ -211,7 +214,7 @@ function SingUp(props) {
             
           </Form>
           {error && <Error>{error.error}</Error>}
-        <HelpLink><Link to="/login">Already Have Account?</Link></HelpLink> 
+        <HelpLink ><Link to="/login">Already Have Account?</Link></HelpLink>
       </Wrapper> }
     </Container>
     </> 

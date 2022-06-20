@@ -5,6 +5,7 @@ import { mobile } from '../Responsive'
 import { Link } from 'react-router-dom'
 import { login } from '../redux/apiCalls'
 import { useDispatch, useSelector } from 'react-redux'
+import ErrorComponent from '../components/ErrorComponent'
 //import { resetError } from '../redux/userRedux'
 
 const Container = styled.div`
@@ -67,7 +68,7 @@ const Button = styled.button`
   padding: 15px 20px;
   background-color: teal;
   color: white;
-  border-radius: 5%;
+  border-radius: 1vmin;
   &:disabled{
     color: green;
     background-color: #e1e6ed;
@@ -99,6 +100,7 @@ function Login(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { isFetching, isError, currentUser} = useSelector(state => state.user)
+
   console.log(currentUser)
   const dispatch = useDispatch()
   const submit = (e) => {
@@ -107,7 +109,7 @@ function Login(props) {
 
     // setTimeout(()=> {
     //   dispatch(resetError())
-    // }, 5000)
+    // }, 4000)
   }
 
   return (
@@ -121,13 +123,14 @@ function Login(props) {
                 <Input type="password" placeholder='Password' onChange={(e)=> setPassword(e.target.value)}></Input>
                 <Button onClick={submit} disabled={isFetching}>Login</Button>
             </Form>
-            {isError && <Error>your login credentials don't match an account in your system</Error>}
+            {isError && <Error>{isError.error}</Error>}
             
             
-            <HelpLink>Do note remember your Password?</HelpLink>
+            <HelpLink><Link to="/forgotpassword">Do note remember your Password?</Link></HelpLink>
             <HelpLink><Link to="/signup">Create New Account</Link></HelpLink>
         </Wrapper>
     </Container>
+  
     </>
   )
 }
