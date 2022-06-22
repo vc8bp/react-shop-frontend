@@ -5,7 +5,7 @@ import { mobile } from '../Responsive'
 import { Link } from 'react-router-dom'
 import { login } from '../redux/apiCalls'
 import { useDispatch, useSelector } from 'react-redux'
-import ErrorComponent from '../components/ErrorComponent'
+import axios from 'axios'
 //import { resetError } from '../redux/userRedux'
 
 const Container = styled.div`
@@ -87,11 +87,6 @@ const Error = styled.span`
 
 function Login(props) {
 
-  
-  
-    
-  
-
   //to change title as soon as component mounts
   useEffect(() => {
     document.title = `SatnamCreation - ${props.title}`
@@ -103,9 +98,18 @@ function Login(props) {
 
   console.log(currentUser)
   const dispatch = useDispatch()
-  const submit = (e) => {
+
+  
+
+  const submit = async (e) => {
+    
     e.preventDefault();
-    login( dispatch ,{ email , password })
+
+    //getting user api
+    const res = await axios.get(`https://geolocation-db.com/json/${process.env.REACT_APP_GIOLOCATION_DB_API_KEY}`);
+    const ip = res.data.IPv4;
+    
+    login( dispatch ,{ email , password, ip })
 
     // setTimeout(()=> {
     //   dispatch(resetError())

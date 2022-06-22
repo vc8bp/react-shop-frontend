@@ -7,6 +7,9 @@ import Footer from '../components/Footer'
 import { Add, Remove } from '@material-ui/icons'
 import { mobile } from '../Responsive'
 import  { useSelector } from 'react-redux'
+import { publicRequest, userRequest } from '../axiosReqMethods'
+import { useDispatch } from 'react-redux'
+import { addProduct } from '../redux/cartRedux'
 
 
 
@@ -212,7 +215,22 @@ function CartPage(props) {
         document.title = `SatnamCreation - ${props.title}`
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
     
+    //api calls
+    // const userID = useSelector(state => state.user.currentUser._id);
+    // console.log(`local = ${userID}`)
+    // const dispatch = useDispatch();
 
+    // useEffect( async () => {
+    //     const cartProductRes = await userRequest.get(`/api/cart/info/${userID}`)
+    //     cartProductRes.data.products.map(async (product)=>{
+    //         const singleProducts = await publicRequest.get(`api/products/info/${cartProductRes.data.products.productID}`)
+    //         console.log(singleProducts)
+    //         dispatch(
+    //             addProduct({product})  
+    //         )
+    //     })
+    //     console.log(cartProductRes.data)
+    // }, [])
     
     const cartProducts = useSelector(state => state.cart)
 

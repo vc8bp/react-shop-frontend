@@ -2,10 +2,11 @@ import { Start, loginSucces, Failed, signUpSucces, signupFailed  } from './userR
 import { publicRequest } from '../axiosReqMethods';
 //login
 export const login = async ( dispatch, user ) => {
-    
+    const { email, password, ip } = user;
+    console.log(ip)
     dispatch(Start())
     try {
-        const res = await publicRequest.post("api/auth/login", user)
+        const res = await publicRequest.post("api/auth/login", {email, password, userIp:ip})
         console.log(user)
         dispatch(loginSucces(res.data))
     
@@ -19,7 +20,9 @@ export const signUp = async ( dispatch, user) => {
     
     dispatch(Start())
     try {
+        console.log(user)
         const res = await publicRequest.post("api/auth/register", user)
+        
         console.log("res : " + res.data)
         dispatch(signUpSucces(res.data))
     } catch (error) {

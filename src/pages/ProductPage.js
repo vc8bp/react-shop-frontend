@@ -11,6 +11,7 @@ import { useLocation } from 'react-router-dom'
 import {publicRequest} from '../axiosReqMethods'
 import { addProduct } from '../redux/cartRedux'
 import { useDispatch } from 'react-redux'
+import { userRequest } from '../axiosReqMethods'
 
 
 

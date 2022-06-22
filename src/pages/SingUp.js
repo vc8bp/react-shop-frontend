@@ -5,6 +5,7 @@ import { mobile } from '../Responsive'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { signUp } from '../redux/apiCalls'
+import axios from 'axios';
 
 //import { resetsignupError } from '../redux/userRedux'
 
@@ -109,7 +110,7 @@ function SingUp(props) {
     document.title = `SatnamCreation - ${props.title}`
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
   
-  const initialValue = { firstName: "", lastName: "", email: "", number: "", password: "", confirmPassword: ""}
+  const initialValue = { firstName: "", lastName: "", email: "", number: "", password: "", confirmPassword: "", userIP: ""}
   const [formValues, setFormValues] = useState(initialValue)
   const [formErrors, setFormErrors] = useState({})
   const [isSubmit, setIsSubmit] = useState(false)
@@ -126,10 +127,16 @@ function SingUp(props) {
       setIsSubmit(true)
   }
 
-  useEffect(() => {
+  useEffect( async () => {
     //console.log(formErrors)
     console.log(formErrors);
+
     if (Object.keys(formErrors).length === 0 && isSubmit) {
+      const res = await axios.get(`https://geolocation-db.com/json/${process.env.REACT_APP_GIOLOCATION_DB_API_KEY}`);
+      const userIP = res.data.IPv4;
+      setFormValues({...formValues, userIP});
+      console.log( "lol "+ JSON.stringify(formValues))
+      console.log(userIP)
       signUp(dispatch, formValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
