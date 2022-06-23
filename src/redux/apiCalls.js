@@ -1,4 +1,4 @@
-import { Start, loginSucces, Failed, signUpSucces, signupFailed  } from './userRedux';
+import { Start, loginSucces, Failed, signUpSucces, signupFailed, resetError  } from './userRedux';
 import { publicRequest } from '../axiosReqMethods';
 //login
 export const login = async ( dispatch, user ) => {
@@ -12,6 +12,11 @@ export const login = async ( dispatch, user ) => {
     
     } catch (error) {
         dispatch(Failed(error.response.data))
+
+        //reseting error
+        setTimeout(() => {
+            dispatch(resetError())
+        }, 5000);
     }
 }
 
@@ -25,8 +30,12 @@ export const signUp = async ( dispatch, user) => {
         
         console.log("res : " + res.data)
         dispatch(signUpSucces(res.data))
-    } catch (error) {
-        
-        dispatch(signupFailed(error.response.data))
+    } catch (error) {  
+        dispatch(signupFailed(error.response.data));
+
+        //reseting error
+        setTimeout(() => {
+            dispatch(resetError())
+        }, 5000);
     }
 }

@@ -134,9 +134,9 @@ function Navbar() {
                          
                         
                 <MenueItem>
-                    <Badge badgeContent={cartProductss} color="primary">
+                    {user && <Badge badgeContent={cartProductss} color="primary">
                         <Link style={link} to="/cart"><ShoppingCartOutlined/></Link>
-                    </Badge>
+                    </Badge>}
                 </MenueItem>
             </Right>
             

@@ -25,7 +25,7 @@ const Container = styled.div`
     
 `
 const Wrapper = styled.div`
-    width: min(400px, 90%);
+    width: min(400px, 80%);
     padding: 30px 20px;
     background-color: white;
     display: flex;
@@ -48,7 +48,6 @@ const Form = styled.form`
 
 const Input = styled.input`
   width: min(370px, 100%);
-
   padding: 10px;
   margin: 20px 10px 0px 0px;
   border-radius: 0.5vmax;
@@ -138,6 +137,7 @@ function SingUp(props) {
       console.log( "lol "+ JSON.stringify(formValues))
       console.log(userIP)
       signUp(dispatch, formValues);
+      
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formErrors])
@@ -173,6 +173,7 @@ function SingUp(props) {
   // const dispatch = useDispatch();
   // const navigate = useNavigate()
   const { isFetching, signupSuccess, error} = useSelector(state => state.user)
+  
 
   // const handleClick = (e) => {
   //   e.preventDefault();

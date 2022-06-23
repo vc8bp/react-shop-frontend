@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { publicRequest } from "../axiosReqMethods"
 import ErrorComponent from "../components/ErrorComponent"
+import { mobile } from "../Responsive"
+import Navbar from "../components/Navbar"
 
 const Container = styled.div`
     width: 100vw;
@@ -12,15 +14,24 @@ const Container = styled.div`
     align-items: center;
     flex-direction: column;
     background-color: #f2f2f2;
+    background-image: linear-gradient(
+      rgba(255,255,255, 0.5),
+      rgba(255,255,255, 0.5)
+      ),
+      url("https://images.pexels.com/photos/131634/pexels-photo-131634.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
 `
 const Wrapper = styled.div`
     padding: 30px 40px;
-    max-width: 300px;
+    width: min(300px, 80%);
     background-color: white;
     flex-direction: row;
     position: relative;
+    align-items: center;
     border-radius: 1vmax;
     box-shadow: 20px 20px 50px grey;
+    ${mobile({
+        padding: "15px 20px",
+    })}
 `
 
 const Form = styled.form`
@@ -41,14 +52,17 @@ text-align: center;
     font-weight: 400;
 `
 const Input = styled.input`
+    
     padding: 5px;
-    width: 290px;
+    width: min(290px, 95%);
     margin-bottom: 15px;
+    font-size: 1rem;
+    border-radius: 0.5vmax;
     
 `
 const Button = styled.button`
     padding: 5px;
-        width: 304px;
+    width: min(300px, 100%);
     margin-bottom: 10px;
     border-radius: 0.5vmax;
     background-color: teal;
@@ -67,7 +81,7 @@ const Button = styled.button`
 const Button2 = styled.button`
     text-align: center;
     position: absolute;
-    width: 380px;
+    width: min(480px, 100%);
     //height: 20px;
     padding: 15px 0px;
     left: 0px;
@@ -100,6 +114,7 @@ const ForgotPassword = () => {
     }
   return (
     <>
+    <Navbar/>
     <Container>
         <Wrapper> 
             <Title>Trouble Logging In?</Title>

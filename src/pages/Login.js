@@ -23,12 +23,13 @@ const Container = styled.div`
     
 `
 const Wrapper = styled.div`
-    width: min(20% 80px 100px);
+    width: min(400px, 80%);
     padding: 40px 30px;
     background-color: white;
     display: flex;
     flex-direction: column;
-    border-radius: 5%;
+    border-radius: 1vmax;
+    box-shadow: 20px 20px 50px grey;
     ${mobile({
       padding: "20px 15px"
     })}
@@ -54,6 +55,7 @@ const Input = styled.input`
   flex: 1;
   display: flex;
   min-height: 40%;
+  border-radius: 0.5vmax;
   ${mobile({
     margin: "15px 0px",
   })}
