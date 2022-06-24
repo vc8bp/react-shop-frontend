@@ -5,6 +5,9 @@ const Container = styled.div`
     position: relative;
     display: ${(props) => props.value};
     transition: all 0.5s ease-in-out;
+
+    position: sticky;
+    bottom: 0;
 `
 const Wrapper = styled.div`
     position: absolute;

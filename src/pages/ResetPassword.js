@@ -5,6 +5,9 @@ import { publicRequest } from "../axiosReqMethods"
 import ErrorComponent from "../components/ErrorComponent"
 import { mobile } from '../Responsive'
 import Navbar from "../components/Navbar"
+import { CheckCircleOutlined } from "@material-ui/icons"
+//import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+
 
 const Container = styled.div`
     width: 100vw;
@@ -87,10 +90,46 @@ const Button2 = styled.button`
     border: none;
     //box-shadow: 20px 20px 50px grey;
     border-radius: 0vmax 0vmax 1vmax 1vmax;
+    cursor: pointer;
+`
+
+//success page
+const Wrapper2 = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+    padding: 30px 40px;
+    width: min(400px, 80%);
+    border-radius: 1vmax;
+    box-shadow: 20px 20px 50px grey;
+    position: relative;
+    ${mobile({
+        minWidth: "80%",
+        padding: "15px 20px",
+    })}
+`
+
+const BackToLogin = styled.button`
+    border-radius: 0vmax 0vmax 1vmax 1vmax;
+    //background-color: white;
+    width: min(500px, 100%);
+    position: absolute;
+    bottom: -10px;
+    border: none;
+    //border-top: 1px solid gray;
+    font-size: 15px;
+    padding: 15px 0px;
+    cursor: pointer;
+    ${mobile({
+        minWidth: "100%"
+    })}
+
 `
 const ResetPassword = () => {
 
-    const [message, setmessage] = useState(null)
+    const [message, setmessage] = useState("")
     const [date, setdate] = useState(null)
 
     const navigate = useNavigate();
@@ -103,7 +142,7 @@ const ResetPassword = () => {
     const id = location.pathname.split("/")[2];
     console.log(id)
 
-
+    const [passChanged, setpassChanged] = useState(false)
     const handleSubmit = async (e)  => {
         e.preventDefault();
         setdate(Date.now());
@@ -116,20 +155,25 @@ const ResetPassword = () => {
         }
         
         try {   
-            const data = await publicRequest.post(`/api/auth/resetpassword/${id}`, {password})
-
+            const res = await publicRequest.post(`/api/auth/resetpassword/${id}`, password)
+            //data.status === 200 && setpassChanged(true)
+            //setpassChanged(true)
             //checking if req was success
-            data.status === 200 && setmessage(data.data)
+            const {status, data} = res;
+            console.log(data);
+            status === 200 && setmessage(data.data);
+            setpassChanged(true);
         
         } catch (error) {
             setmessage(error?.response?.data?.error)
+            setpassChanged(false)
         } 
     }
   return (
     <>
     <Navbar/>
     <Container>
-        <Wrapper> 
+        {!passChanged ? <Wrapper> 
             <Title>Trouble Logging In?</Title>
             <P>Enter your password and we'll send you a link to reset your account password.</P>
                 <Form onSubmit={handleSubmit}>
@@ -141,10 +185,16 @@ const ResetPassword = () => {
                     <Button disabled={!password || !cpassword}>Change Password</Button>
                 </Form>
                 <Button2 onClick={() => navigate("/login")}>Back To Login</Button2>
-        </Wrapper>
-
-
-
+        </Wrapper> 
+        :
+        <Wrapper2>
+        <CheckCircleOutlined style={{color: "green", fontSize: "150px", margin: "20px 0px"}}/>
+        <h1 style={{margin: "10px 0px"}}>Password Changed!</h1>
+        <p style={{margin: "10px 0px", marginBottom:'40px'}}>Your password has been changed successfully</p>
+        <BackToLogin onClick={() => navigate("/login")}>Back to login</BackToLogin>
+        
+        </Wrapper2>  
+        }
     </Container>
     {/* sending date because it will not run use effect if the message is same but you again wont to show
         and date is always unique so use effect will */}

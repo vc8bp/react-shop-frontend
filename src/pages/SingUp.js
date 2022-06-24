@@ -49,7 +49,7 @@ const Form = styled.form`
 const Input = styled.input`
   width: min(370px, 100%);
   padding: 10px;
-  margin: 20px 10px 0px 0px;
+  margin: 10px 0px;
   border-radius: 0.5vmax;
   min-height: 40%;
   ${mobile({
@@ -64,9 +64,8 @@ const Button = styled.button`
   margin-right: 50%;
   min-width: 40%;
   border: none;
-  background-color: teal;;
-  padding: 15px 20px;
   background-color: teal;
+  padding: 15px 20px; 
   color: white;
   border-radius: 5%;
   display: block;
@@ -126,19 +125,18 @@ function SingUp(props) {
       setIsSubmit(true)
   }
 
-  useEffect( async () => {
-    //console.log(formErrors)
-    console.log(formErrors);
-
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      const res = await axios.get(`https://geolocation-db.com/json/${process.env.REACT_APP_GIOLOCATION_DB_API_KEY}`);
-      const userIP = res.data.IPv4;
-      setFormValues({...formValues, userIP});
-      console.log( "lol "+ JSON.stringify(formValues))
-      console.log(userIP)
-      signUp(dispatch, formValues);
-      
+  useEffect(() => {
+    const push = async () => {
+      if (Object.keys(formErrors).length === 0 && isSubmit) {
+        const res = await axios.get(`https://geolocation-db.com/json/${process.env.REACT_APP_GIOLOCATION_DB_API_KEY}`);
+        const userIP = res.data.IPv4;
+        setFormValues({...formValues, userIP});
+        console.log( "lol "+ JSON.stringify(formValues))
+        console.log(userIP)
+        signUp(dispatch, formValues);
+      }
     }
+    push();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formErrors])
   
