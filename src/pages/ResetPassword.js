@@ -5,14 +5,9 @@ import { publicRequest } from "../axiosReqMethods"
 import ErrorComponent from "../components/ErrorComponent"
 import { mobile } from '../Responsive'
 import Navbar from "../components/Navbar"
-<<<<<<< HEAD
 import { CheckCircleOutlined } from "@material-ui/icons"
 //import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 
-=======
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
-import { minWidth } from "@mui/system"
->>>>>>> d9c3b44efe1cceb038cae683345e0781307cb7ec
 
 const Container = styled.div`
     width: 100vw;
@@ -193,11 +188,7 @@ const ResetPassword = () => {
         </Wrapper> 
         :
         <Wrapper2>
-<<<<<<< HEAD
         <CheckCircleOutlined style={{color: "green", fontSize: "150px", margin: "20px 0px"}}/>
-=======
-        <CheckCircleOutlinedIcon style={{color: "green", fontSize: "150px", margin: "20px 0px"}}/>
->>>>>>> d9c3b44efe1cceb038cae683345e0781307cb7ec
         <h1 style={{margin: "10px 0px"}}>Password Changed!</h1>
         <p style={{margin: "10px 0px", marginBottom:'40px'}}>Your password has been changed successfully</p>
         <BackToLogin onClick={() => navigate("/login")}>Back to login</BackToLogin>
