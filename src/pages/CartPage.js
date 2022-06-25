@@ -7,9 +7,7 @@ import Footer from '../components/Footer'
 import { Add, Remove } from '@material-ui/icons'
 import { mobile } from '../Responsive'
 import  { useSelector } from 'react-redux'
-import { publicRequest, userRequest } from '../axiosReqMethods'
-import { useDispatch } from 'react-redux'
-import { addProduct } from '../redux/cartRedux'
+
 
 
 

@@ -6,7 +6,7 @@ export const login = async ( dispatch, user ) => {
     console.log(ip)
     dispatch(Start())
     try {
-        const res = await publicRequest.post("api/auth/login", {email, password, userIp:ip})
+        const res = await publicRequest.post("api/auth/login", {email, password})
         console.log(user)
         dispatch(loginSucces(res.data))
     

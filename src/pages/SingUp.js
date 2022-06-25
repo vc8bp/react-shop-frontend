@@ -196,7 +196,7 @@ function SingUp(props) {
       {signupSuccess ? <SignupSuccessDiv>Signup Successfull!</SignupSuccessDiv> : 
       <Wrapper>
           <Title>Sign Up</Title>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} autoComplete="on">
             <Input name='firstName' placeholder='Name' onChange={handleOnChange}/>
             <FormValidationError>{formErrors.firstName}</FormValidationError>
 
@@ -209,10 +209,10 @@ function SingUp(props) {
             <Input name='email' type="email" placeholder='Email' onChange={handleOnChange} />
             <FormValidationError>{formErrors.email}</FormValidationError>
 
-            <Input name='password' type="password" placeholder='Password' onChange={handleOnChange}/><br/>
+            <Input name='password' type="password" placeholder='Password' onChange={handleOnChange} autoComplete="off"/><br/>
             <FormValidationError>{formErrors.password}</FormValidationError>
 
-            <Input name='confirmPassword' type="password" placeholder='Conform Password' onChange={handleOnChange}/>
+            <Input name='confirmPassword' type="password" placeholder='Conform Password' onChange={handleOnChange} autoComplete="off"/>
             <FormValidationError>{formErrors.cpassword}</FormValidationError>
             {/* to check all inputes are filled */}
             <Button  disabled={isFetching}>Sing Up</Button>

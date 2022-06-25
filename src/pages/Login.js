@@ -5,7 +5,7 @@ import { mobile } from '../Responsive'
 import { Link } from 'react-router-dom'
 import { login } from '../redux/apiCalls'
 import { useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
+
 //import { resetError } from '../redux/userRedux'
 
 const Container = styled.div`
@@ -106,12 +106,9 @@ function Login(props) {
   const submit = async (e) => {
     
     e.preventDefault();
-
-    //getting user api
-    const res = await axios.get(`https://geolocation-db.com/json/${process.env.REACT_APP_GIOLOCATION_DB_API_KEY}`);
-    const ip = res.data.IPv4;
+ 
     
-    login( dispatch ,{ email , password, ip })
+    login( dispatch ,{ email , password })
 
     // setTimeout(()=> {
     //   dispatch(resetError())
@@ -124,9 +121,9 @@ function Login(props) {
     <Container>
         <Wrapper>
             <Title>Login</Title>
-            <Form>
+            <Form autoComplete='on'>
                 <Input type="email" placeholder='Email' onChange={(e)=> setEmail(e.target.value)}></Input>
-                <Input type="password" placeholder='Password' onChange={(e)=> setPassword(e.target.value)}></Input>
+                <Input type="password" placeholder='Password' onChange={(e)=> setPassword(e.target.value)} autoComplete="off"></Input>
                 <Button onClick={submit} disabled={isFetching}>Login</Button>
             </Form>
             {isError && <Error>{isError.error}</Error>}

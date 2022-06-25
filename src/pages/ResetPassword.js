@@ -155,7 +155,7 @@ const ResetPassword = () => {
         }
         
         try {   
-            const res = await publicRequest.post(`/api/auth/resetpassword/${id}`, password)
+            const res = await publicRequest.post(`/api/auth/resetpassword/${id}`, {password})
             //data.status === 200 && setpassChanged(true)
             //setpassChanged(true)
             //checking if req was success
