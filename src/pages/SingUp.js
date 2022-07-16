@@ -61,7 +61,7 @@ const Input = styled.input`
 const Button = styled.button`
   margin: 15px 0px;
   //margin rifht used to make it take full width
-  margin-right: 50%;
+  margin-right: 60%;
   min-width: 40%;
   border: none;
   background-color: teal;
@@ -78,7 +78,7 @@ const Button = styled.button`
 
 const HelpLink = styled.label`
     margin: 5px 0px;
-    text-decoration: underline;
+    text-decoration: none;
     cursor: pointer;
     width: fit-content;
     display: inline;

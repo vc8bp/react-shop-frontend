@@ -9,8 +9,8 @@ import NewsLetter from '../components/NewsLetter'
 import { mobile } from '../Responsive'
 import { useLocation } from 'react-router-dom'
 import {publicRequest} from '../axiosReqMethods'
-import { addProduct } from '../redux/cartRedux'
-import { useDispatch } from 'react-redux'
+import { addProduct, deleteProduct, editProduct } from '../redux/cartRedux'
+import { useDispatch, useSelector } from 'react-redux'
 
 
 
@@ -212,11 +212,29 @@ function ProductPage(props) {
 
     //redux action
     const dispatch = useDispatch()
+    const cartProducts = useSelector(state => state.cart);
+    const user = useSelector(state => state.user.currentUser);
+    
     const handleSubClick = () => {
-        dispatch(
-            addProduct({...product ,size:size, color:Color, quantity:ProductQuentity, price: product.price })
+        let exist = cartProducts.products.filter((p) => p._id === product._id);
+        let index = cartProducts.products.findIndex((p) => p._id === product._id);
+        
+        //if product already exist 
+        if(exist.length > 0){
             
-        )
+            dispatch(deleteProduct({index})) //deleting a product by pasing index
+            dispatch( //again adding product by adding prev n current quantity
+                editProduct({...product ,size:size, color:Color, quantity: (exist[0]?.quantity + ProductQuentity), price: product.price }) 
+                
+            )
+        } else {    
+            dispatch(
+                addProduct({...product ,size:size, color:Color, quantity:ProductQuentity, price: product.price })
+                
+                )
+        }
+        
+        
     }
     
     

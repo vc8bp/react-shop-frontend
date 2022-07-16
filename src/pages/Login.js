@@ -71,6 +71,7 @@ const Button = styled.button`
   background-color: teal;
   color: white;
   border-radius: 1vmin;
+  margin-right: 60% ;
   &:disabled{
     color: green;
     background-color: #e1e6ed;
@@ -78,9 +79,7 @@ const Button = styled.button`
   }
 `
 const HelpLink = styled.a`
-    margin: 5px 0px;
-    text-decoration: underline;
-    cursor: pointer;
+    margin: 5px 0px; 
 `
 const Error = styled.span`
     color: red;
@@ -124,12 +123,13 @@ function Login(props) {
             <Form autoComplete='on'>
                 <Input type="email" placeholder='Email' onChange={(e)=> setEmail(e.target.value)}></Input>
                 <Input type="password" placeholder='Password' onChange={(e)=> setPassword(e.target.value)} autoComplete="off"></Input>
+                <HelpLink style={{marginLeft:"auto", marginRight:"0" }}><Link to="/forgotpassword">Forgot your password?</Link></HelpLink>
                 <Button onClick={submit} disabled={isFetching}>Login</Button>
             </Form>
             {isError && <Error>{isError.error}</Error>}
             
             
-            <HelpLink><Link to="/forgotpassword">Do note remember your Password?</Link></HelpLink>
+            {/* <HelpLink><Link to="/forgotpassword">Do note remember your Password?</Link></HelpLink> */}
             <HelpLink><Link to="/signup">Create New Account</Link></HelpLink>
         </Wrapper>
     </Container>

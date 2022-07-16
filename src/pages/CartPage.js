@@ -217,7 +217,7 @@ function CartPage(props) {
     // const userID = useSelector(state => state.user.currentUser._id);
     // console.log(`local = ${userID}`)
     // const dispatch = useDispatch();
-
+ 
     // useEffect( async () => {
     //     const cartProductRes = await userRequest.get(`/api/cart/info/${userID}`)
     //     cartProductRes.data.products.map(async (product)=>{
