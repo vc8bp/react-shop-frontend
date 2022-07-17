@@ -1,4 +1,4 @@
-import React, { useEffect }from 'react'
+import React, { useEffect, useState }from 'react'
 import Announcments from '../components/Announcments'
 import Navbar from '../components/Navbar'
 import styled from 'styled-components'
@@ -6,7 +6,8 @@ import NewsLetter from '../components/NewsLetter'
 import Footer from '../components/Footer'
 import { Add, Remove } from '@material-ui/icons'
 import { mobile } from '../Responsive'
-import  { useSelector } from 'react-redux'
+import  { useSelector, useDispatch } from 'react-redux'
+import { setPrice } from '../redux/cartRedux'
 
 
 
@@ -229,8 +230,23 @@ function CartPage(props) {
     //     })
     //     console.log(cartProductRes.data)
     // }, [])
-    
+
     const cartProducts = useSelector(state => state.cart)
+    const dispatch = useDispatch();
+
+
+    useEffect(() => {   
+        let totalPrice = 0;
+        cartProducts.products.forEach((p) => {    
+            totalPrice = totalPrice + (p.quantity * p.price); 
+        });
+        dispatch(setPrice(totalPrice))
+
+        
+    }, [])
+    
+    console.log(`redux price :${cartProducts.price}`)       
+    
 
   return (
     <Container>
@@ -249,7 +265,7 @@ function CartPage(props) {
             <Bottom>
                 <Info>
                     {cartProducts.products.map((product) => (
-                        <Product>
+                        <Product key={product._id}>
                         <ProductDeteail>
                          <Image src={product.img}/>
                            <Details>
@@ -279,7 +295,7 @@ function CartPage(props) {
                 <Summary>
                     <SummaryTitle>Products</SummaryTitle>
                         {cartProducts.products.map((product) => (
-                            <SummaryItem>
+                            <SummaryItem key={product._id}>
                                 <SummaryText>{product.title}</SummaryText>
                                 <SummaryPrice>{product.price * product.quantity}</SummaryPrice>
                             </SummaryItem>
