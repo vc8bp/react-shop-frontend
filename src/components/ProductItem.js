@@ -127,6 +127,8 @@ function ProductItem(data) {
  
   const { img, title, _id} = data.data;
 
+  
+
 
 
 
@@ -137,7 +139,7 @@ function ProductItem(data) {
       <Title>{title}</Title>
       <Info>
         <Icon>
-          <ShoppingCartOutlined />
+          <ShoppingCartOutlined/>
         </Icon>
         <Icon>
           <Link style={link} onClick={HandleClick} to={`/product/${_id}`}><SearchOutlined/></Link>

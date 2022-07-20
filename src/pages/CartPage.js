@@ -1,13 +1,14 @@
-import React, { useEffect, useState }from 'react'
+import React, { useEffect}from 'react'
 import Announcments from '../components/Announcments'
 import Navbar from '../components/Navbar'
 import styled from 'styled-components'
 import NewsLetter from '../components/NewsLetter'
 import Footer from '../components/Footer'
-import { Add, Remove } from '@material-ui/icons'
+import { Add, Delete, DeleteOutlineOutlined, Remove } from '@material-ui/icons'
 import { mobile } from '../Responsive'
 import  { useSelector, useDispatch } from 'react-redux'
-import { setPrice } from '../redux/cartRedux'
+import { deleteProduct, setPrice} from '../redux/cartRedux'
+import { StyleRounded } from '@mui/icons-material'
 
 
 
@@ -65,10 +66,27 @@ const Product = styled.div`
     flex: 2;
     display: flex;
     margin: 10px 0px;
+    position: relative;
+    background-color: #f7f7f7;
+    margin-right: 20px;
     ${mobile({
         flexDirection: "column",  
+        marginRight: "0px",
     })} 
 `
+const DelButton = styled.div`
+    
+    position: absolute;
+    right: -15px;
+    top: -15px;
+    ${mobile({
+        top: "50%",
+        right: "0px",
+        
+    })}
+    
+`
+
 const ProductDeteail = styled.div`
     flex: 2;
     display: flex;
@@ -160,7 +178,7 @@ const Summary = styled.div`
     flex: 1;
     max-height: 50vh;
     border: solid lightgray 1px;
-    border-radius: 5%;
+    border-radius: 2vmax;
     padding: 10px;
 `
 
@@ -209,6 +227,7 @@ const Button = styled.button`
 
 
 function CartPage(props) {
+
     //to change title as soon as component mounts
     useEffect(() => {
         document.title = `SatnamCreation - ${props.title}`
@@ -243,9 +262,15 @@ function CartPage(props) {
         dispatch(setPrice(totalPrice))
 
         
-    }, [])
+    }, [cartProducts.products])
     
     console.log(`redux price :${cartProducts.price}`)       
+    
+    const handleDeleteProduct = (id) => {
+        let index = cartProducts.products.findIndex((p) => p._id === id);
+        console.log(`delete index : ${index}`)
+        dispatch(deleteProduct({index}))
+    }
     
 
   return (
@@ -266,6 +291,9 @@ function CartPage(props) {
                 <Info>
                     {cartProducts.products.map((product) => (
                         <Product key={product._id}>
+                            <DelButton onClick={() => handleDeleteProduct(product._id)}>
+                                <DeleteOutlineOutlined style={{fontSize: "40px" , color: "#AB2A28"}}/>
+                            </DelButton>
                         <ProductDeteail>
                          <Image src={product.img}/>
                            <Details>
@@ -287,6 +315,7 @@ function CartPage(props) {
                                 
                             </ProductAmmountContainer>
                             <ProductPrice>{product.price}</ProductPrice>
+
                         </PriceDeteail>
                     </Product>
                     ))}
