@@ -5,6 +5,7 @@ import { publicRequest } from "../axiosReqMethods"
 import ErrorComponent from "../components/ErrorComponent"
 import { mobile } from "../Responsive"
 import Navbar from "../components/Navbar"
+import { v4 as uuidv4 } from 'uuid';
 
 const Container = styled.div`
     width: 100vw;
@@ -93,14 +94,14 @@ const Button2 = styled.button`
 const ForgotPassword = () => {
 
     const [message, setmessage] = useState(null)
-    const [date, setdate] = useState(null)
+    const [uid, setuid] = useState(null)
 
     const navigate = useNavigate();
     const [email, setEmail] = useState(null)
-    console.log(email)
+    
 
     const handleSubmit = async (e)  => {
-        setdate(Date.now())
+        setuid(uuidv4());
         e.preventDefault();
         try {   
             const data = await publicRequest.post("/api/auth/forgotpass", {email})
@@ -109,6 +110,7 @@ const ForgotPassword = () => {
             data.status === 200 && setmessage(data.data)
         
         } catch (error) {
+            
             setmessage(error?.response?.data?.error)
         } 
     }
@@ -131,7 +133,7 @@ const ForgotPassword = () => {
     </Container>
     {/* sending date because it will not run use effect if the message is same but you again wont to show
         and date is always unique so use effect will */}
-    <ErrorComponent message={message} date={date} />
+    <ErrorComponent message={message} id={uid} />
     </>
   )
 }

@@ -1,5 +1,7 @@
 import styled, { keyframes } from 'styled-components'
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import { publicRequest } from '../axiosReqMethods'
+
 const Container = styled.div`
     min-height: 40px;
     //height: 4vh;
@@ -15,14 +17,22 @@ const Container = styled.div`
 const slide = keyframes`
 
   0% {
-    transform: translateX(100%);
-    left: 0%;
+    transform: translateX(100vw);
+    @media (min-width: 700px) {
+      transform: translateX(-100%);
+    } 
   }
 
   100% {
-    transform: translateX(-200%);
-    left: 100%;
+    transform: translateX(-100vw); //tryed some random min max stuff and it worked!!
+    /* transform: translateX(-200%); */
+    
+    /* @media (max-width: 700px) {
+      transform: translateX(-100%);
+    } */
   }
+
+  
 `
 const Text = styled.p`
   position: absolute;
@@ -30,21 +40,29 @@ const Text = styled.p`
   width: max-content;
   
   animation: 10s linear 0s infinite ${slide};
-  /* @media (max-width: 500px) {
-    font-size: 10px;
-  } */
+  
 `
 
 
 
 function Announcments() {
+  const [announcment, setannouncment] = useState("")
+  useEffect( async () => {
+    const data = await publicRequest.get(`/api/announcment`);
+    setannouncment(data.data);
+
+  }, [])
+  
   return (
-    <Container>
+  
+    <>
+      {announcment && <Container>
         <Text>
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Illum commodi est maxime odio atque voluptates sapiente, voluptatem neque deleniti? Minus!
+          {announcment.Title}
         </Text>
-        
-    </Container>
+      </Container>}
+    </>
+    
   )
 }
 

@@ -34,19 +34,24 @@ function ErrorComponent(props) {
     const [isShow, setisShow] = useState("none")
     
     useEffect(() => {
-        setmessage(props.message);
-        setisShow("block");
-     
+            const int = setTimeout(() => {
+                setmessage(null);
+                setisShow("none");
+                console.log("hiding error")
+            }, 5000)
 
-        setTimeout(() => {
-            setmessage(null);
-            setisShow("none");
-        }, 5000)
+            if(message){
+                clearTimeout(int);
+                
+            }
+            setmessage(props.message);
+            setisShow("block");
+               
+                
+        
 
-    }, [props.message, props.date])
+    }, [props.message, props.id])
     
-    console.log(` show : ${isShow}`)
-    console.log(message)
   return (
     <>
         {message &&<Container value={isShow}>
