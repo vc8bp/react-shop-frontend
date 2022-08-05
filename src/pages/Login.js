@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 const Container = styled.div`
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - 60px); //60px of navbar
     display: flex;
     justify-content: center;
     align-items: center;

@@ -34,17 +34,17 @@ function ErrorComponent(props) {
     const [isShow, setisShow] = useState("none")
     
     useEffect(() => {
-            const int = setTimeout(() => {
-                setmessage(null);
-                setisShow("none");
-                console.log("hiding error")
-            }, 5000)
-
-            if(message){
-                clearTimeout(int);
-                
+            
+            const inter = () => {
+                setTimeout(() => {
+                    setmessage(null);
+                    setisShow("none");
+                    console.log("hiding error")
+                }, 5000)
             }
+            clearInterval(inter, ()=> console.log("i am clear interval"))
             setmessage(props.message);
+            inter()
             setisShow("block");
                
                 
