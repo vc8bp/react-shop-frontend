@@ -128,11 +128,11 @@ function SingUp(props) {
   useEffect(() => {
     const push = async () => {
       if (Object.keys(formErrors).length === 0 && isSubmit) {
-        const res = await axios.get(`https://geolocation-db.com/json/${process.env.REACT_APP_GIOLOCATION_DB_API_KEY}`);
-        const userIP = res.data.IPv4;
-        setFormValues({...formValues, userIP});
-        console.log( "lol "+ JSON.stringify(formValues))
-        console.log(userIP)
+        // const res = await axios.get(`https://geolocation-db.com/json/${process.env.REACT_APP_GIOLOCATION_DB_API_KEY}`);
+        // const userIP = res?.data.IPv4;
+        // setFormValues({...formValues, userIP});
+        // console.log( "lol "+ JSON.stringify(formValues))
+        // console.log("ip")
         signUp(dispatch, formValues);
       }
     }
