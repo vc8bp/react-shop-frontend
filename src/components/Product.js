@@ -18,18 +18,31 @@ function Product(props) {
   const [products, setProducts] =useState([])
   const [filteredproducts, setFilteredProducts] = useState([])
 
+  const [reqcancled , setReqCancle] = useState(false)
+
   useEffect(() => {
-    const getProducts = async () => {
+    const axiosCancelToken = axios.CancelToken.source()
+
+    if(!reqcancled) {
       
-      try {
-        const res = await axios.get(cat ? `${process.env.REACT_APP_BACKEND_API_BASE_URL}/api/products/allinfo?category=${cat}` : `${process.env.REACT_APP_BACKEND_API_BASE_URL}/api/products/allinfo`) 
-        !cat ? setProducts(res.data) : setProducts(res.data.sort((a, b) => -a.createdAt.localeCompare(b.createdAt)))
-        
-      } catch (error) {
-        console.log(error)
-      }
+      const getProducts = async () => { 
+        try {
+          const res = await axios.get(cat ? `${process.env.REACT_APP_BACKEND_API_BASE_URL}/api/products/allinfo?category=${cat}` : `${process.env.REACT_APP_BACKEND_API_BASE_URL}/api/products/allinfo` ,{cancelToken: axiosCancelToken.token}) 
+          !cat ? setProducts(res.data) : setProducts(res.data.sort((a, b) => -a.createdAt.localeCompare(b.createdAt)))
+          
+        } catch (error) {
+          if(axios.isCancel(error)) {
+            console.log("req cancled by user");
+          } else console.log(error)
+        }
+      } 
+      getProducts();
+      
     }
-    getProducts();
+    return () => {
+      axiosCancelToken.cancel();
+      setReqCancle(true);
+    }
   }, [cat])
 
   //sort products logic

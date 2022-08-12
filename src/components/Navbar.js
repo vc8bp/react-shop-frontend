@@ -90,6 +90,7 @@ const MenueItem = styled.div`
     font-size: 14px;
     cursor: pointer;
     margin-left: 25px;
+    padding: 10px 0;
     ${mobile({
         marginLeft: "0.6rem",
     })}

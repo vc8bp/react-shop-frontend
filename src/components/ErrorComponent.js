@@ -33,21 +33,18 @@ function ErrorComponent(props) {
     const [message, setmessage] = useState(null)
     const [isShow, setisShow] = useState("block")
 
-    const timeout = () => { 
-            setTimeout(() => {
-            setmessage(null);
-            //setisShow("none");
-            console.log("hiding error")
-        }, 5000)
-    }
+    
     
     useEffect(() => {
-        setmessage(props.message);
-        //setisShow("block");       
-        timeout()   
+        setmessage(props.message);   
+        const timeout = setTimeout(() => {
+            setmessage(null);
+            console.log("hiding error")
+        }, 5000)
+    
         return () => {
+            setmessage(null);
             clearTimeout(timeout);
-            console.log("cleanup funtion")
         }
     }, [props.message, props.id])
     
