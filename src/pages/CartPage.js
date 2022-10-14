@@ -300,7 +300,7 @@ function CartPage(props) {
                                 <ProductName><b>Product:</b> {product.title}</ProductName>
                                 <ProductNumber><b>ID:</b> {product.productno}</ProductNumber>
                                 <ProductColor color={product.color}/>
-                                <ProductSize><b>Size:</b>{product.size}</ProductSize>
+                                <ProductSize><b>Size:</b>  {product.size}</ProductSize>
                             </Details>
                         </ProductDeteail>
                         <PriceDeteail>

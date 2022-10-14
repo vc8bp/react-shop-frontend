@@ -8,9 +8,10 @@ import Navbar from '../components/Navbar'
 import NewsLetter from '../components/NewsLetter'
 import { mobile } from '../Responsive'
 import { useLocation } from 'react-router-dom'
-import {publicRequest} from '../axiosReqMethods'
+import {publicRequest, userRequest} from '../axiosReqMethods'
 import { addProduct, deleteProduct, editProduct } from '../redux/cartRedux'
 import { useDispatch, useSelector } from 'react-redux'
+import addDynamicScript from '../helpers/addDynamicScript'
 
 
 
@@ -224,16 +225,53 @@ function ProductPage(props) {
             
             dispatch(deleteProduct({index})) //deleting a product by pasing index
             dispatch( //again adding product by adding prev n current quantity
-                editProduct({...product ,size:size, color:Color, quantity: (exist[0]?.quantity + ProductQuentity), price: product.price }) 
+                            //added XL size by default bcz it wa selecting by default if user dosent selects size
+                editProduct({...product ,size:size || "XL", color:Color, quantity: (exist[0]?.quantity + ProductQuentity), price: product.price }) 
                 
             )
         } else {    
             dispatch(
-                addProduct({...product ,size:size, color:Color, quantity:ProductQuentity, price: product.price })
-                
+                            //added XL size by default bcz it wa selecting by default if user dosent selects size
+                addProduct({...product ,size:size || "XL", color:Color, quantity:ProductQuentity, price: product.price })            
                 )
-        }
+        }    
+    }
+    const handleBuyNow = async () => {
+        const ammount = product.price * ProductQuentity;
+        const {data:{order}} = await userRequest.post("api/buy/checkout",{ammount});
+        const {data:{key}} = await userRequest.get("api/buy/getkey");
+        console.log(order);
+        const loadRes = addDynamicScript("https://checkout.razorpay.com/v1/checkout.js");
+
+        if(!loadRes) return alert("razor pay failed to load please try again")
         
+        const options = {
+            key: key, // Enter the Key ID generated from the Dashboard
+            amount: order.ammount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: "INR",
+            name: product.title,
+            description : product.desc || "random description",
+            image: product.img,
+            order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            callback_url: "http://localhost:4000/api/buy/paymentVerify",
+            prefill: {
+                name: `${user.firstName} ${user.lastName}`,
+                email: user.email,
+                contact: user.number
+            },
+            notes: {
+                address: "Razorpay Corporate Office"
+            },
+            theme: {
+                color: "#40a0a0"
+            }
+        };
+        
+        const rzp1 = new window.Razorpay(options);
+        rzp1.open();
+
+          //ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+          //payment veefy giving nothng 
         
     }
     
@@ -286,6 +324,7 @@ function ProductPage(props) {
                         
                       </ValueContainer>
                       <Button onClick={handleSubClick}>Add To Cart</Button>
+                      <Button onClick={handleBuyNow}>Buy Now</Button>
                     </CartContainer>
           </InfoContainer>
 
