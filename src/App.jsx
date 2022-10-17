@@ -14,6 +14,7 @@ import BackToTopBTN from '../src/components/BackToTopBTN'
 import ForgotPassword from "./pages/ForgotPassword";
 import { useSelector } from "react-redux";
 import ResetPassword from "./pages/ResetPassword";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 
 const App = () => {
@@ -32,6 +33,8 @@ const App = () => {
       <Route exact path="/product/:id"  element={<ProductPage title="Product"/>}/>
       <Route exact path="/forgotpassword"  element={<ForgotPassword title="ForgotPassword"/>}/>
       <Route exact path="/resetpassword/:token"  element={<ResetPassword title="ReseetPassword"/>}/>
+      <Route exact path="/paymentSuccess"  element={<PaymentSuccess title="PaymentSuccess"/>}/>
+
     </Routes>
     <BackToTopBTN/>  
     </>

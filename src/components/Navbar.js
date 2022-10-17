@@ -31,7 +31,7 @@ const Container = styled.div`
     
 `
 const Wrapper = styled.div`
-    padding: 10px 20px;
+    padding: 10px 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -44,23 +44,25 @@ const Left = styled.div`
         display: "none",
     })}
 `
-const Lenguage = styled.span`
-    font-size: 14px;
-    cursor: pointer;
-    
-`
+
+
 const SearchContainer = styled.div`
     border: 0.5px solid gray;
     display: flex;
     align-items: center;
+    justify-content: center;
     margin-left: 20px;
     padding: 5px;
+    border-radius: 0.5vmin;
+    height: 25px;
     
 `
 const Input = styled.input`
     outline: none;
     border: none;
-    background-color: rgba(255,255,255,.8);
+    background-color: transparent;
+    width: 100%;
+    
     
     
 `
@@ -85,6 +87,46 @@ const Right = styled.div`
     justify-content: flex-end;
 
 `
+
+const DropdownList = styled.div`
+    display: none;
+  //  position: relative;
+    
+`
+const DropdownContainer = styled.div`
+    background-color: #baabab;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: white;
+`
+const Dropdown = styled.span`
+    padding: 10px 20px;
+    background-color: inherit;
+    color: black;
+    &:hover {
+        background-color: #e3dbdb;
+        color: black;
+    }
+`
+const AccountContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    &:hover ${DropdownList}{
+        display: block;
+    }
+`
+const Hello = styled.span`
+    font-size: 15px;
+    font-weight: 400;
+`
+const Account = styled.span`
+    font-weight: 600;
+    position: relative;
+`
+
+
 
 const MenueItem = styled.div`
     font-size: 14px;
@@ -115,23 +157,34 @@ function Navbar() {
       //const cartQuantity = useSelector(state => state.cart.quantity)
       const cartProductss = useSelector(state => state.cart.quantity)
       const user = useSelector(state => state.user.currentUser);
-      console.log(`user : ${user}`)
+      console.log(`user : ${JSON.stringify(user)}`)
   return (
     <Container>
         <Wrapper>
             <Left>
-                <Lenguage>EN</Lenguage>
-                <SearchContainer>
-                    <Input></Input><Search style={{colour: "grey", fontSize: 16, cursor: "pointer" }}/>  
-                </SearchContainer>
+                <Logo><Link onClick={HandleClick} style={link} to="/">Title.</Link></Logo>
             </Left>
             <Center>
-                <Logo><Link onClick={HandleClick} style={link} to="/">Title.</Link></Logo>
+            <SearchContainer>
+                    <Input></Input><Search style={{colour: "grey", fontSize: 16, cursor: "pointer" }}/>  
+                </SearchContainer>
             </Center>
             <Right>
                 {!user ? <><MenueItem><Link style={link} to="/signup">Sing Up</Link></MenueItem>
-                        <MenueItem><Link style={link} to="/login">Log In</Link></MenueItem></> :
-                        <MenueItem onClick={handleLogout}>log out</MenueItem> }
+                        <MenueItem><Link style={link} to="/login">Log In</Link></MenueItem></> 
+                        :
+                        <AccountContainer>
+                        <Hello>hello, {user.firstName}</Hello>
+                        <Account>Account</Account>
+                            <DropdownList>
+                                <DropdownContainer>
+                                    <Dropdown>Setting</Dropdown>
+                                    <Dropdown>Orders</Dropdown>
+                                    <Dropdown onClick={handleLogout}>Logout</Dropdown>
+                                </DropdownContainer>
+                            </DropdownList>
+                        </AccountContainer>
+                        }
                          
                         
                 <MenueItem>

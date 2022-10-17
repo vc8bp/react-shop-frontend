@@ -204,12 +204,19 @@ function ProductPage(props) {
       const gatData = async () => {
           const data = await publicRequest.get(`/api/products/info/${id}`);
           setProduct(data.data);
+          console.log(product)
       }
       gatData()
     }, [id])
     
-    const [Color, setColor] = useState("");
-    const [size, setsize] = useState("");
+  
+    const [Color, setColor] = useState();
+    const [size, setsize] = useState();
+
+    //////////////this dosent work dk why
+    // const [Color, setColor] = useState(product.color[0]);
+    // const [size, setsize] = useState(product.size[0]);
+
 
     //redux action
     const dispatch = useDispatch()
@@ -237,13 +244,16 @@ function ProductPage(props) {
         }    
     }
     const handleBuyNow = async () => {
-        const ammount = product.price * ProductQuentity;
-        const {data:{order}} = await userRequest.post("api/buy/checkout",{ammount});
+        const loadRes = await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js");
+        console.log(loadRes)
+        if(!window.Razorpay) {
+            console.log("calling funtion again")
+            await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js") //script is not loading at first time dk why so i added this XD
+        } 
+        const {data:{order}} = await userRequest.post("api/buy/checkout",{productID: product._id, quantity:ProductQuentity, size, color:Color,user:user._id});
         const {data:{key}} = await userRequest.get("api/buy/getkey");
         console.log(order);
-        const loadRes = addDynamicScript("https://checkout.razorpay.com/v1/checkout.js");
-
-        if(!loadRes) return alert("razor pay failed to load please try again")
+        
         
         const options = {
             key: key, // Enter the Key ID generated from the Dashboard
@@ -305,7 +315,7 @@ function ProductPage(props) {
                   </Filter>
                   <Filter>
                   <FilterTitle>Size</FilterTitle>
-                  <FilterSize onChange={(e)=> setsize(e.target.value)}>
+                  <FilterSize onChange={(e)=> setsize(e.target.value)} >
                       {(product.size || []).map((e)=> (
                          <FilterSizeOption key={e}>{e}</FilterSizeOption>
                       ))}
