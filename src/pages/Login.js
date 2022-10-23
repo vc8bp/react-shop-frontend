@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
 import Navbar from '../components/Navbar'
 import { mobile } from '../Responsive'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { login } from '../redux/apiCalls'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -100,18 +100,12 @@ function Login(props) {
   console.log(currentUser)
   const dispatch = useDispatch()
 
-  
-
+  const navigate = useNavigate()
   const submit = async (e) => {
     
     e.preventDefault();
- 
-    
-    login( dispatch ,{ email , password })
+    login( dispatch ,{ email , password},  navigate)
 
-    // setTimeout(()=> {
-    //   dispatch(resetError())
-    // }, 4000)
   }
 
   return (

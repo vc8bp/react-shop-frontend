@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import ProductItem from './ProductItem'
 import styled from 'styled-components'
 import axios from "axios"
+import { mobile } from '../Responsive'
 
 
 const Container = styled.div`
@@ -10,6 +11,10 @@ const Container = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    ${mobile({
+      padding: "0px"
+    })}
+    
 `
 
 function Product(props) {

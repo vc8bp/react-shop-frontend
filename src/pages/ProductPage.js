@@ -7,7 +7,7 @@ import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
 import NewsLetter from '../components/NewsLetter'
 import { mobile } from '../Responsive'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {publicRequest, userRequest} from '../axiosReqMethods'
 import { addProduct, deleteProduct, editProduct } from '../redux/cartRedux'
 import { useDispatch, useSelector } from 'react-redux'
@@ -125,10 +125,13 @@ const CartContainer = styled.div`
     width: 50%;
     justify-content: space-between;
     align-items: center;
-    @media only screen and (max-width: 1000px) {
+    @media only screen and (max-width: 1330px) {
         width: 100%;
     }
     
+`
+const PurchaeContainer = styled.div`
+
 `
 const ValueContainer = styled.div`
     display: flex;
@@ -166,9 +169,13 @@ const Button = styled.button`
     padding: 10px;
     border-radius: 5%;
     background-color: white;
+    margin: 5px 5px;
     cursor: pointer;
     &:hover {
         background-color: #c3c7c4;
+    }
+    @media only screen and (max-width: 1330px) {
+        margin: 5px 10px;
     }
 `
 
@@ -243,7 +250,11 @@ function ProductPage(props) {
                 )
         }    
     }
+    const navigate = useNavigate();
     const handleBuyNow = async () => {
+        if(!user) {
+            return navigate('/login');
+        } 
         const loadRes = await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js");
         console.log(loadRes)
         if(!window.Razorpay) {
@@ -333,8 +344,10 @@ function ProductPage(props) {
                         </ValueARButton>
                         
                       </ValueContainer>
-                      <Button onClick={handleSubClick}>Add To Cart</Button>
-                      <Button onClick={handleBuyNow}>Buy Now</Button>
+                      <PurchaeContainer>
+                        <Button onClick={handleSubClick}>Add To Cart</Button>
+                        <Button onClick={handleBuyNow}>Buy Now</Button>
+                      </PurchaeContainer>
                     </CartContainer>
           </InfoContainer>
 

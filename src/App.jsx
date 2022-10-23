@@ -3,7 +3,7 @@ import React from "react";
 import CartPage from "./pages/CartPage";
 import {
   Routes,
-  Route, Navigate
+  Route, Navigate, useNavigate
 } from 'react-router-dom';
 import Login from "./pages/Login";
 import SingUp from "./pages/SingUp";
@@ -20,13 +20,12 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 const App = () => {
 
   const user = useSelector(state => state.user.currentUser);
-
   return (
     
     <>
     <Routes>
       <Route exact path="/"  element={<Home title="Home" />}  />
-      <Route exact path="/login"  element={ user ? <Navigate to='/'/> : <Login title="Login"/>}/>
+      <Route exact path="/login"  element={ user ? <Navigate to="/"/> : <Login title="Login"/>}/>
       <Route exact path="/signup"  element={user ? <Navigate to='/'/> : <SingUp title="Sign up"/>}/>
       <Route exact path="/Cart"  element={<CartPage title="Cart"/>}/>
       <Route exact path="/products/:category"  element={<ProductList title="Products"/>}/>

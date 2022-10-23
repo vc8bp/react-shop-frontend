@@ -1,7 +1,7 @@
 import { Start, loginSucces, Failed, signUpSucces, signupFailed, resetError  } from './userRedux';
 import { publicRequest } from '../axiosReqMethods';
 //login
-export const login = async ( dispatch, user ) => {
+export const login = async ( dispatch, user, navigate ) => {
     const { email, password, ip } = user;
     console.log(ip)
     dispatch(Start())
@@ -9,6 +9,7 @@ export const login = async ( dispatch, user ) => {
         const res = await publicRequest.post("api/auth/login", {email, password})
         console.log(user)
         dispatch(loginSucces(res.data))
+        navigate(-1)
     
     } catch (error) {
         dispatch(Failed(error.response.data))
