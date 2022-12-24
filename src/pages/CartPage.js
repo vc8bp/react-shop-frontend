@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 import styled from 'styled-components'
 import NewsLetter from '../components/NewsLetter'
 import Footer from '../components/Footer'
-import { Add, Delete, DeleteOutlineOutlined, Remove } from '@material-ui/icons'
+import { Add, ClearOutlined, DeleteOutlineOutlined, Remove } from '@material-ui/icons'
 import { mobile } from '../Responsive'
 import  { useSelector, useDispatch } from 'react-redux'
 import { deleteProduct, setPrice} from '../redux/cartRedux'
@@ -77,8 +77,8 @@ const Product = styled.div`
 const DelButton = styled.div`
     
     position: absolute;
-    right: -15px;
-    top: -15px;
+    right: 0px;
+    top: 0px;
     ${mobile({
         top: "50%",
         right: "0px",
@@ -292,7 +292,7 @@ function CartPage(props) {
                     {cartProducts.products.map((product) => (
                         <Product key={product._id}>
                             <DelButton onClick={() => handleDeleteProduct(product._id)}>
-                                <DeleteOutlineOutlined style={{fontSize: "40px" , color: "#AB2A28"}}/>
+                                <ClearOutlined style={{fontSize: "40px" , color: "#AB2A28"}}/>
                             </DelButton>
                         <ProductDeteail>
                          <Image src={product.img}/>

@@ -1,4 +1,4 @@
-
+import './app.css'
 import React from "react";
 import CartPage from "./pages/CartPage";
 import {
@@ -33,7 +33,6 @@ const App = () => {
       <Route exact path="/forgotpassword"  element={<ForgotPassword title="ForgotPassword"/>}/>
       <Route exact path="/resetpassword/:token"  element={<ResetPassword title="ReseetPassword"/>}/>
       <Route exact path="/paymentSuccess"  element={<PaymentSuccess title="PaymentSuccess"/>}/>
-
     </Routes>
     <BackToTopBTN/>  
     </>

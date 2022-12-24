@@ -10,7 +10,7 @@ const Container = styled.div`
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: space-evenly;
     ${mobile({
       padding: "0px"
     })}
@@ -83,7 +83,7 @@ function Product(props) {
    
   
   return (
-    <Container>
+    <Container className='container'>
         { cat ?
         filteredproducts.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})
         : products.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})

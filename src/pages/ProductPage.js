@@ -12,6 +12,7 @@ import {publicRequest, userRequest} from '../axiosReqMethods'
 import { addProduct, deleteProduct, editProduct } from '../redux/cartRedux'
 import { useDispatch, useSelector } from 'react-redux'
 import addDynamicScript from '../helpers/addDynamicScript'
+import { useRef } from 'react'
 
 
 
@@ -19,6 +20,7 @@ import addDynamicScript from '../helpers/addDynamicScript'
 const Wrapper = styled.div`
     display: flex;
     padding: 20px;
+    
     ${mobile({
         flexDirection: "column",
     })}
@@ -30,16 +32,31 @@ const ImgContainer = styled.div`
     flex: 1;
     display: flex;
     align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    
 `
 const Image = styled.img`
-    width: 100%;
+    max-width: 100%;
     max-height: 80vh;
     object-fit: cover;
     object-position: center;
+    transition: transform 0.5s ease-in-out;
+
+    // so many for browser supports
+    cursor: -moz-zoom-in; 
+    cursor: -webkit-zoom-in; 
+    cursor: zoom-in;
+
+    :hover {
+        transform: scale(1.1);
+    }
 `
 const InfoContainer = styled.div`
     padding: 0px 20px;
     flex: 1;
+    
     
 `
 
@@ -295,19 +312,31 @@ function ProductPage(props) {
           //payment veefy giving nothng 
         
     }
+
+
+    // IMAGE Lence In Out Effect
+    const img = useRef(null)
+    const handleImgMouseEnter = (e) =>{
+        const x = e.clientX - e.target.offsetLeft
+        const y = e.clientY - e.target.offsetTop
+        img.current.style.transformOrigin = `${x}px ${y}px`
+        img.current.style.transform = 'scale(2)'   
+    }
+
+    const hadleImgMouseLeave = (e) => {
+        img.current.style.transformOrigion = `center`
+        img.current.style.transform = 'scale(1)'
+    }
     
     
   
-  return (
-
-    
-      
+  return ( 
     <>
       <Announcments/>
       <Navbar/>
       <Wrapper>
           <ImgContainer>
-            <Image src={product.img}/>
+            <Image src={product.img} onMouseMove={handleImgMouseEnter} ref={img} onMouseLeave={hadleImgMouseLeave}/>
           </ImgContainer>
           <InfoContainer>
               <TitleContainer>

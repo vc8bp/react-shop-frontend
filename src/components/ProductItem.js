@@ -2,109 +2,103 @@ import { FavoriteBorderOutlined, SearchOutlined, ShoppingCartOutlined } from '@m
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom';
+import { mobile } from '../Responsive';
 
 
-const Info = styled.div`
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.2);
-  z-index: 3;
+const Wrapper = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.5s ease;
-  cursor: pointer;
-  
+
+`
+const Info = styled.div`
+  padding: 10px; 
+
 `;
 
-const Title = styled.h1`
-    position: absolute;
-    
-    height: 100%;
-    width: 100%;
-    display: flex;
-    right: 0;
-    bottom: 0;
-    color: black;
-    font-weight: bold;
-    z-index: 3;   
-    transition: all 1.1s ease;
-    margin-left: 10px;
-    @media (max-width: 500px) {
-      font-size: 20px;
-    }
+const Title = styled.h3`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-bottom: 2px;
+  ${Info}:hover{
+    display: none;
+  }
+`
+
+const Description = styled.h4`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 400;
+  padding-bottom: 5px;
+`
+const WishList = styled.button`
+  width: 100%;
+  margin: auto;
+  margin-bottom: 5px;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0px 0px 1px #888888;
+  display: none;  
+  transition: all 0.3s ease-in-out;
+
+  :hover {
+    color: white;
+    background-color: teal;
+    border-radius: 0.5vmin;
+    box-shadow: 0px 0px 3px #888888;
+  }
   `
-  const Image = styled.img`
-  height: 75%;
-  z-index: 2;
-  transition: all 0.5s ease-in;
-  `;
+
+const WishlistWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+`
+
+const Price = styled.span`
+  font-weight: 600;
+`
+
+const Image = styled.img`
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+`;
 
 const Container = styled.div`
-  flex: 1;
-  margin: 5px;
-  min-width: 280px;
-  height: 350px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f5fbfd;
-  position: relative;
-  overflow: hidden;
-  border-radius: 3%;
-  &:hover ${Info}{
-    opacity: 1;
-  }
-  @media (max-width: 500px) {
-     min-width: 150px;
-     height: 230px;
-     }
-     &:hover ${Title}{
-        opacity: 0;
-     }
-     &:hover ${Image}{
-        transform: scale(1.1);
-     }
-     &:hover {
-        box-shadow: 4px 4px 2px -1px rgba(0,0,0,.2);
-    }
-`;
-
-const Circle = styled.div`
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background-color: white;
-  position: absolute;
-`;
-
-
-
-const Icon = styled.div`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px;
-  transition: all 0.5s ease;
-  color: black;
   
-  &:hover {
-    background-color: #e9f5f5;
-    transform: scale(1.1);
+  width: 210px;
+  height: 360px;
+  background-color: #fcfcfc;
+  margin-bottom: 10px;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+  
+
+  @media only screen and (min-width: 500px) {
+    :hover{
+      box-shadow: 0px 0px 15px #888888;
+      transform: scale(1.1);
+    }
+
+    :hover ${Title} {
+      display: none;
+    }
+    :hover ${Description} {
+      display: none;
+    }
+    :hover ${WishList}{
+      display: block;
+    }
   }
-  &:active {
-    background-color: #000;
-    color: white !important;
+
+  @media only screen and (max-width: 500px) {
+    width: 175px;
+    max-width: 185px;
   }
 `;
+
 
 const link = {
   
@@ -125,7 +119,9 @@ function ProductItem(data) {
     });
   }
  
-  const { img, title, _id} = data.data;
+  const { img, title, _id, desc, price} = data.data;
+  console.log("dataaaaaaaaa")
+  console.log(data)
 
   
 
@@ -133,22 +129,26 @@ function ProductItem(data) {
 
 
   return (
-    <Container>
-      <Circle />
-      <Image src={img} />
-      <Title>{title}</Title>
-      <Info>
-        <Icon>
-          <ShoppingCartOutlined/>
-        </Icon>
-        <Icon>
-          <Link style={link} onClick={HandleClick} to={`/product/${_id}`}><SearchOutlined/></Link>
-        </Icon>
-        <Icon>
-          <FavoriteBorderOutlined />
-        </Icon>
-      </Info>
-    </Container>
+    
+      <Container>
+        <Link style={link} onClick={HandleClick} to={`/product/${_id}`}>
+        <Wrapper>
+          <Image src={img} /> 
+        </Wrapper>
+        </Link>
+        <Info>
+          <Title>{title}</Title>
+          {/* <Description>{desc?.length > 25 ? `${desc?.slice(0,24)}...` : desc}</Description> */}
+          <Description>{desc ? desc : "No Description"}</Description>
+          <WishList>
+            <WishlistWrapper>
+              <FavoriteBorderOutlined/>WISHLIST
+            </WishlistWrapper>
+          </WishList>
+          <Price>Rs. {price}</Price>
+        </Info>  
+      </Container>
+    
   )
 }
 
