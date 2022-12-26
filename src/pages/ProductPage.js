@@ -228,7 +228,6 @@ function ProductPage(props) {
       const gatData = async () => {
           const data = await publicRequest.get(`/api/products/info/${id}`);
           setProduct(data.data);
-          console.log(product)
       }
       gatData()
     }, [id])
@@ -247,7 +246,7 @@ function ProductPage(props) {
     const cartProducts = useSelector(state => state.cart);
     const user = useSelector(state => state.user.currentUser);
     
-    const handleSubClick = () => {
+    const handleSubClick = async () => {
         let exist = cartProducts.products.filter((p) => p._id === product._id);
         let index = cartProducts.products.findIndex((p) => p._id === product._id);
         
@@ -265,22 +264,29 @@ function ProductPage(props) {
                             //added XL size by default bcz it wa selecting by default if user dosent selects size
                 addProduct({...product ,size:size || "XL", color:Color, quantity:ProductQuentity, price: product.price })            
                 )
-        }    
+        }  
+        const res = await userRequest.post(`/api/cart`,{
+            products : [
+                {
+                    productID: product.productno,
+                    quantity: ProductQuentity,
+                    color: Color || product.color[0],
+                    size : size || product.size[0]
+                }
+            ]
+        }) 
     }
     const navigate = useNavigate();
     const handleBuyNow = async () => {
         if(!user) {
             return navigate('/login');
         } 
-        const loadRes = await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js");
-        console.log(loadRes)
+        //const loadRes = await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js");
         if(!window.Razorpay) {
-            console.log("calling funtion again")
             await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js") //script is not loading at first time dk why so i added this XD
         } 
         const {data:{order}} = await userRequest.post("api/buy/checkout",{productID: product._id, quantity:ProductQuentity, size, color:Color,user:user._id});
         const {data:{key}} = await userRequest.get("api/buy/getkey");
-        console.log(order);
         
         
         const options = {
@@ -327,60 +333,64 @@ function ProductPage(props) {
         img.current.style.transformOrigion = `center`
         img.current.style.transform = 'scale(1)'
     }
-    
-    
   
   return ( 
     <>
       <Announcments/>
       <Navbar/>
-      <Wrapper>
-          <ImgContainer>
-            <Image src={product.img} onMouseMove={handleImgMouseEnter} ref={img} onMouseLeave={hadleImgMouseLeave}/>
-          </ImgContainer>
-          <InfoContainer>
-              <TitleContainer>
-                <Title>{product.title}</Title>
-                <Dno>Design No - {product.productno}</Dno>
-              </TitleContainer>
-              <Description>{!product.desc ? `Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora sint accusamus explicabo in natus dolor maiores voluptate labore adipisci!lorem20Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro dicta, commodi pariatur nisi fugiat hic quia voluptas! Quidem, earum voluptas.`: product.desc}
-              </Description>
-              <Price>₹{product.price}</Price>
-              <FilterContainer>
-                  <Filter>
-                      <FilterTitle>Color</FilterTitle>
-                      {(product.color || []).map((e)=> (
-                        <FilterColor color={e} key={e} onClick={()=> setColor(e)}/>
-                      ))}
-                  </Filter>
-                  <Filter>
-                  <FilterTitle>Size</FilterTitle>
-                  <FilterSize onChange={(e)=> setsize(e.target.value)} >
-                      {(product.size || []).map((e)=> (
-                         <FilterSizeOption key={e}>{e}</FilterSizeOption>
-                      ))}
-                  </FilterSize>
-                  </Filter>
-              </FilterContainer>
-                    <CartContainer>
-                      <ValueContainer>
-                        <ValueARButton>
-                            <Remove onClick={()=>HandlClick("dec")}/>
-                        </ValueARButton>
-                        <CartValue>{ProductQuentity}</CartValue>
-                        <ValueARButton>
-                            <Add onClick={()=>HandlClick("inc")}/>
-                        </ValueARButton>
-                        
-                      </ValueContainer>
-                      <PurchaeContainer>
-                        <Button onClick={handleSubClick}>Add To Cart</Button>
-                        <Button onClick={handleBuyNow}>Buy Now</Button>
-                      </PurchaeContainer>
-                    </CartContainer>
-          </InfoContainer>
-
-      </Wrapper>
+        {
+            product ?
+            <Wrapper>
+        
+            <ImgContainer>
+              <Image src={product.img} onMouseMove={handleImgMouseEnter} ref={img} onMouseLeave={hadleImgMouseLeave}/>
+            </ImgContainer>
+            <InfoContainer>
+                <TitleContainer>
+                  <Title>{product.title}</Title>
+                  <Dno>Design No - {product.productno}</Dno>
+                </TitleContainer>
+                <Description>{!product.desc ? `Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora sint accusamus explicabo in natus dolor maiores voluptate labore adipisci!lorem20Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro dicta, commodi pariatur nisi fugiat hic quia voluptas! Quidem, earum voluptas.`: product.desc}
+                </Description>
+                <Price>₹{product.price}</Price>
+                <FilterContainer>
+                    <Filter>
+                        <FilterTitle>Color</FilterTitle>
+                        {(product.color || []).map((e)=> (
+                          <FilterColor color={e} key={e} onClick={()=> setColor(e)}/>
+                        ))}
+                    </Filter>
+                    <Filter>
+                    <FilterTitle>Size</FilterTitle>
+                    <FilterSize onChange={(e)=> setsize(e.target.value)} >
+                        {(product.size || []).map((e)=> (
+                           <FilterSizeOption key={e}>{e}</FilterSizeOption>
+                        ))}
+                    </FilterSize>
+                    </Filter>
+                </FilterContainer>
+                      <CartContainer>
+                        <ValueContainer>
+                          <ValueARButton>
+                              <Remove onClick={()=>HandlClick("dec")}/>
+                          </ValueARButton>
+                          <CartValue>{ProductQuentity}</CartValue>
+                          <ValueARButton>
+                              <Add onClick={()=>HandlClick("inc")}/>
+                          </ValueARButton>
+                          
+                        </ValueContainer>
+                        <PurchaeContainer>
+                          <Button onClick={handleSubClick}>Add To Cart</Button>
+                          <Button onClick={handleBuyNow}>Buy Now</Button>
+                        </PurchaeContainer>
+                      </CartContainer>
+            </InfoContainer>
+  
+        </Wrapper>
+            : <h1>Loading...</h1>
+        }
+      
       <NewsLetter/>
       <Footer/>
       

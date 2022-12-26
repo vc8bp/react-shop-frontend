@@ -1,4 +1,4 @@
-import React, { useEffect}from 'react'
+import React, { useEffect, useState}from 'react'
 import Announcments from '../components/Announcments'
 import Navbar from '../components/Navbar'
 import styled from 'styled-components'
@@ -7,8 +7,10 @@ import Footer from '../components/Footer'
 import { Add, ClearOutlined, DeleteOutlineOutlined, Remove } from '@material-ui/icons'
 import { mobile } from '../Responsive'
 import  { useSelector, useDispatch } from 'react-redux'
-import { deleteProduct, setPrice} from '../redux/cartRedux'
+import { addProduct, deleteProduct, setPrice} from '../redux/cartRedux'
 import { StyleRounded } from '@mui/icons-material'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { publicRequest, userRequest } from '../axiosReqMethods'
 
 
 
@@ -51,9 +53,10 @@ const Bottom = styled.div`
     display: flex;
     justify-content: space-between;
     //flex-direction: column;
-    ${mobile({
-        flexDirection: "column",
-    })} 
+    @media only screen and (max-width: 970px) {
+        flex-direction: column;
+        align-items: center;       
+    }
 `
 const Info = styled.div`
     flex: 3;
@@ -67,12 +70,20 @@ const Product = styled.div`
     display: flex;
     margin: 10px 0px;
     position: relative;
+    overflow: hidden;
     background-color: #f7f7f7;
     margin-right: 20px;
+    transition: all 0.3s ease-in-out;
+
     ${mobile({
         flexDirection: "column",  
-        marginRight: "0px",
+        margin: "10px 5px",
     })} 
+
+    :hover{
+      box-shadow: 0px 0px 5px #888888;
+      transform: scale(1.02);
+    }
 `
 const DelButton = styled.div`
     
@@ -89,23 +100,33 @@ const DelButton = styled.div`
 
 const ProductDeteail = styled.div`
     flex: 2;
+    width: 100%;
     display: flex;
     ${mobile({
         flex: "1",
-        width: "5vw",
+        width: "100vw",
     })} 
 `
 const Image = styled.img`
     width: 200px;
+    max-width: 100%;
+    object-fit: cover;
 
 `
 const Details = styled.div`
     display: flex;
+    flex: 1;
     flex-direction: column;
+    max-width: fit-content;
+    padding-right: 10px;
     justify-content: space-around;
     margin: 10px;
+    ${mobile({
+        width: "100%",
+    })} 
     `
-const ProductName = styled.span``
+const ProductName = styled.span`
+`
 const ProductNumber = styled.span``
 const ProductColor = styled.div`
     width: 20px;
@@ -177,6 +198,7 @@ const Hr = styled.hr`
 const Summary = styled.div`
     flex: 1;
     max-height: 50vh;
+    max-width: 350px;
     border: solid lightgray 1px;
     border-radius: 2vmax;
     padding: 10px;
@@ -195,7 +217,9 @@ const SummaryItem = styled.div`
     margin: ${props=> props.type === "total" && 10}px 0px;
 `
 const SummaryText = styled.div`
-
+    white-space: nowrap;
+    width: 80%; 
+    overflow: hidden;
 `
 const SummaryPrice = styled.div`
     
@@ -223,10 +247,10 @@ const Button = styled.button`
 
 
 
-    
-
-
 function CartPage(props) {
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const [cartProductRes, setCartProductRes] = useState();
 
     //to change title as soon as component mounts
     useEffect(() => {
@@ -234,24 +258,25 @@ function CartPage(props) {
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
     
     //api calls
-    // const userID = useSelector(state => state.user.currentUser._id);
-    // console.log(`local = ${userID}`)
-    // const dispatch = useDispatch();
- 
-    // useEffect( async () => {
-    //     const cartProductRes = await userRequest.get(`/api/cart/info/${userID}`)
-    //     cartProductRes.data.products.map(async (product)=>{
-    //         const singleProducts = await publicRequest.get(`api/products/info/${cartProductRes.data.products.productID}`)
-    //         console.log(singleProducts)
-    //         dispatch(
-    //             addProduct({product})  
-    //         )
-    //     })
-    //     console.log(cartProductRes.data)
-    // }, [])
+    const userID = useSelector(state => state?.user?.currentUser?._id);
+
+
+    useEffect( async () => {
+        if(userID) {
+            try{
+                const res = await userRequest.get(`/api/cart/info/${userID}`)
+                console.log(res)
+                setCartProductRes(res.data)
+            }catch(err){
+                console.log("error", err)
+                //TODO: display error component
+            }
+            
+        }
+    }, [])
 
     const cartProducts = useSelector(state => state.cart)
-    const dispatch = useDispatch();
+
 
 
     useEffect(() => {   
@@ -266,10 +291,29 @@ function CartPage(props) {
     
     console.log(`redux price :${cartProducts.price}`)       
     
-    const handleDeleteProduct = (id) => {
-        let index = cartProducts.products.findIndex((p) => p._id === id);
-        console.log(`delete index : ${index}`)
-        dispatch(deleteProduct({index}))
+    const handleDeleteProduct = async (e, id) => {
+        e.preventDefault();
+        try{
+            const filteredProducts = cartProductRes.products.filter(p => {
+                return id !== p.productID
+            })
+            setCartProductRes(e => ({...e, products: filteredProducts}))
+            const res = await userRequest.delete(`/api/cart/${id}`)
+            console.log(res)
+            //TODO: display Success component
+        }catch(err){
+            console.log("error", err)
+            //TODO: display error component
+        }
+        // let index = cartProducts.products.findIndex((p) => p._id === id);
+        // console.log(`delete index : ${index}`)
+        // dispatch(deleteProduct({index}))
+        console.log(cartProductRes)
+    }
+
+    const handleProductClick = (id) => {
+        console.log("clicked")
+        navigate(`/product/${id}`)
     }
     
 
@@ -289,36 +333,38 @@ function CartPage(props) {
             </Top>
             <Bottom>
                 <Info>
-                    {cartProducts.products.map((product) => (
-                        <Product key={product._id}>
-                            <DelButton onClick={() => handleDeleteProduct(product._id)}>
+                    {cartProductRes?.products ? 
+                    cartProductRes.products.map((product) => (
+                        <Product key={product.productID}>
+                            <DelButton onClick={(e) => handleDeleteProduct(e,product.productID)}>
                                 <ClearOutlined style={{fontSize: "40px" , color: "#AB2A28"}}/>
                             </DelButton>
-                        <ProductDeteail>
-                         <Image src={product.img}/>
-                           <Details>
-                                <ProductName><b>Product:</b> {product.title}</ProductName>
-                                <ProductNumber><b>ID:</b> {product.productno}</ProductNumber>
-                                <ProductColor color={product.color}/>
-                                <ProductSize><b>Size:</b>  {product.size}</ProductSize>
-                            </Details>
-                        </ProductDeteail>
-                        <PriceDeteail>
-                            <ProductAmmountContainer>
-                                <ValueARButton>
-                                    <Remove/>
-                                </ValueARButton>
-                                <ProductAmmount>{product.quantity}</ProductAmmount>
-                                <ValueARButton>
-                                    <Add/>
-                                </ValueARButton>
+                            <ProductDeteail onClick={() => handleProductClick(product._id)}>
+                                <Image src={product.img}/>
+                                <Details>
+                                    <ProductName><b>Product:</b> {product.title}</ProductName>
+                                    <ProductNumber><b>ID:</b> {product.productID}</ProductNumber>
+                                    <ProductColor color={product.color}/>
+                                    <ProductSize><b>Size:</b>  {product.size}</ProductSize>
+                                </Details>
+                            </ProductDeteail>
+                            <PriceDeteail>
+                                <ProductAmmountContainer>
+                                    <ValueARButton>
+                                        <Remove/>
+                                    </ValueARButton>
+                                    <ProductAmmount>{product.quantity}</ProductAmmount>
+                                    <ValueARButton>
+                                        <Add/>
+                                    </ValueARButton>
                                 
-                            </ProductAmmountContainer>
-                            <ProductPrice>{product.price}</ProductPrice>
-
-                        </PriceDeteail>
-                    </Product>
-                    ))}
+                                </ProductAmmountContainer>
+                                <ProductPrice>{product.price}</ProductPrice>
+                            </PriceDeteail>
+                        </Product>
+                    ))
+                :
+                <p>No Products In cart found</p>}
                     <Hr/>
                 </Info>
                 <Summary>
