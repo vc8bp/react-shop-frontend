@@ -66,8 +66,8 @@ const Button = styled.button`
 function NewsLetter() {
   return (
     <Container>
-        <Title>Contect us</Title>
-        <Description>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt, odit!</Description>
+        <Title>Subscribe to our NewsLetter</Title>
+        <Description>and recive upto 300rs discount on your first order</Description>
         <InputContainer>
             <Input placeholder='Enter your email'/>
             <Button><Send/></Button>

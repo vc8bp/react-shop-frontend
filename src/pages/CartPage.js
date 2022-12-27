@@ -4,13 +4,11 @@ import Navbar from '../components/Navbar'
 import styled from 'styled-components'
 import NewsLetter from '../components/NewsLetter'
 import Footer from '../components/Footer'
-import { Add, ClearOutlined, DeleteOutlineOutlined, Remove } from '@material-ui/icons'
+import { Add, ClearOutlined, Remove } from '@material-ui/icons'
 import { mobile } from '../Responsive'
 import  { useSelector, useDispatch } from 'react-redux'
-import { addProduct, deleteProduct, setPrice} from '../redux/cartRedux'
-import { StyleRounded } from '@mui/icons-material'
-import { Navigate, useNavigate } from 'react-router-dom'
-import { publicRequest, userRequest } from '../axiosReqMethods'
+import { useNavigate } from 'react-router-dom'
+import { userRequest } from '../axiosReqMethods'
 
 
 
@@ -60,6 +58,12 @@ const Bottom = styled.div`
 `
 const Info = styled.div`
     flex: 3;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    @media only screen and (max-width: 970px) {
+        align-items: center;       
+    }
 
 `
 
@@ -79,6 +83,9 @@ const Product = styled.div`
         flexDirection: "column",  
         margin: "10px 5px",
     })} 
+    @media only screen and (max-width: 970px) {
+        width: 99%;
+    }
 
     :hover{
       box-shadow: 0px 0px 5px #888888;
@@ -90,11 +97,6 @@ const DelButton = styled.div`
     position: absolute;
     right: 0px;
     top: 0px;
-    ${mobile({
-        top: "50%",
-        right: "0px",
-        
-    })}
     
 `
 
@@ -198,10 +200,14 @@ const Hr = styled.hr`
 const Summary = styled.div`
     flex: 1;
     max-height: 50vh;
-    max-width: 350px;
+    width: 350px;
+    max-width: 100%;
     border: solid lightgray 1px;
     border-radius: 2vmax;
     padding: 10px;
+    @media only screen and (max-width: 970px) {
+        width: 90%;
+    }
 `
 
 const SummaryTitle = styled.h1`
@@ -257,15 +263,14 @@ function CartPage(props) {
         document.title = `SatnamCreation - ${props.title}`
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
     
-    //api calls
     const userID = useSelector(state => state?.user?.currentUser?._id);
 
 
+    //get User Cart
     useEffect( async () => {
         if(userID) {
             try{
                 const res = await userRequest.get(`/api/cart/info/${userID}`)
-                console.log(res)
                 setCartProductRes(res.data)
             }catch(err){
                 console.log("error", err)
@@ -275,22 +280,17 @@ function CartPage(props) {
         }
     }, [])
 
-    const cartProducts = useSelector(state => state.cart)
-
-
-
+    //count cart total
+    const [totalCartPrice, setTotalCartPrice] = useState(0)
     useEffect(() => {   
-        let totalPrice = 0;
-        cartProducts.products.forEach((p) => {    
-            totalPrice = totalPrice + (p.quantity * p.price); 
-        });
-        dispatch(setPrice(totalPrice))
-
-        
-    }, [cartProducts.products])
-    
-    console.log(`redux price :${cartProducts.price}`)       
-    
+        console.log("me runed")
+        const total = cartProductRes?.products.reduce((total, item) => {
+            return total + (item.price * item.quantity)
+        },0)
+        setTotalCartPrice(total);
+    }, [cartProductRes?.products, cartProductRes?.products.map(p => p.quantity)])//map is used bcz we need to reRender this component if any products quantity changes so we maped true every product quantity
+     
+    //delete product
     const handleDeleteProduct = async (e, id) => {
         e.preventDefault();
         try{
@@ -299,23 +299,32 @@ function CartPage(props) {
             })
             setCartProductRes(e => ({...e, products: filteredProducts}))
             const res = await userRequest.delete(`/api/cart/${id}`)
-            console.log(res)
+            
             //TODO: display Success component
         }catch(err){
             console.log("error", err)
             //TODO: display error component
         }
-        // let index = cartProducts.products.findIndex((p) => p._id === id);
-        // console.log(`delete index : ${index}`)
-        // dispatch(deleteProduct({index}))
-        console.log(cartProductRes)
     }
 
-    const handleProductClick = (id) => {
-        console.log("clicked")
-        navigate(`/product/${id}`)
+    //handle dec inc in product Quantity
+    const handleProductQuantityChange = async (productID, quantity, incORdec) => {
+        try {
+            const res = await userRequest.put(`/api/cart/updatequantity/${productID}/${quantity}`)
+            // const requestedProsuct = cartProductRes.filter(p => {
+            //     return p.productID === productID
+            // })
+            console.log({productID})
+            const productIndex = cartProductRes.products.findIndex(p => p.productID === productID)
+            console.log({productIndex})
+            const newProduct = cartProductRes.products[productIndex].quantity = quantity
+            setCartProductRes(p => ({...p, newProduct}))
+        } catch (error) {
+            console.log(error)
+        }
     }
     
+
 
   return (
     <Container>
@@ -339,7 +348,7 @@ function CartPage(props) {
                             <DelButton onClick={(e) => handleDeleteProduct(e,product.productID)}>
                                 <ClearOutlined style={{fontSize: "40px" , color: "#AB2A28"}}/>
                             </DelButton>
-                            <ProductDeteail onClick={() => handleProductClick(product._id)}>
+                            <ProductDeteail onClick={() => navigate(`/product/${product._id}`)}>
                                 <Image src={product.img}/>
                                 <Details>
                                     <ProductName><b>Product:</b> {product.title}</ProductName>
@@ -350,11 +359,11 @@ function CartPage(props) {
                             </ProductDeteail>
                             <PriceDeteail>
                                 <ProductAmmountContainer>
-                                    <ValueARButton>
+                                    <ValueARButton onClick={() => handleProductQuantityChange(product.productID, --product.quantity)}>
                                         <Remove/>
                                     </ValueARButton>
                                     <ProductAmmount>{product.quantity}</ProductAmmount>
-                                    <ValueARButton>
+                                    <ValueARButton onClick={() => handleProductQuantityChange(product.productID, ++product.quantity)}>
                                         <Add/>
                                     </ValueARButton>
                                 
@@ -369,7 +378,7 @@ function CartPage(props) {
                 </Info>
                 <Summary>
                     <SummaryTitle>Products</SummaryTitle>
-                        {cartProducts.products.map((product) => (
+                        {cartProductRes?.products.map((product) => (
                             <SummaryItem key={product._id}>
                                 <SummaryText>{product.title}</SummaryText>
                                 <SummaryPrice>{product.price * product.quantity}</SummaryPrice>
@@ -377,7 +386,7 @@ function CartPage(props) {
                         ))}
                         <SummaryItem type="total">
                             <SummaryText >Total</SummaryText>
-                            <SummaryPrice>{cartProducts.price}</SummaryPrice>
+                            <SummaryPrice>{totalCartPrice}</SummaryPrice>
                         </SummaryItem>
                         <ButtonWrapper>
                             <Button>Check out</Button>
