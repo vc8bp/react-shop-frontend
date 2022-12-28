@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { useDispatch} from 'react-redux'
 import { logoutUser } from '../redux/userRedux'
 import { userRequest } from "../axiosReqMethods";
+import { setProduct } from "../redux/cartRedux";
 
 
 
@@ -156,15 +157,17 @@ function Navbar() {
 
       //const cartQuantity = useSelector(state => state.cart.quantity)
     //   const cartProductss = useSelector(state => state.cart.quantity)
-       const user = useSelector(state => state.user.currentUser);
-    const [cartSize, setcartSize] = useState(0)
+    const user = useSelector(state => state.user.currentUser);
+    const cartSize = useSelector(state => state.cart.quantity)
+    console.log(cartSize)
+
     useEffect(() => {
         const fetchh = async () => {
             const {data} = await userRequest.get("api/cart/size")
-            setcartSize(data.size)
+            dispatch(setProduct(data.size))
         }
-        fetchh()
-    
+        fetchh();
+
     }, [])
     
   return (

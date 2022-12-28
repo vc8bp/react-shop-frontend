@@ -9,6 +9,7 @@ import { mobile } from '../Responsive'
 import  { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { userRequest } from '../axiosReqMethods'
+import { deleteProduct } from '../redux/cartRedux'
 
 
 
@@ -298,8 +299,8 @@ function CartPage(props) {
                 return id !== p.productID
             })
             setCartProductRes(e => ({...e, products: filteredProducts}))
-            const res = await userRequest.delete(`/api/cart/${id}`)
-            
+            dispatch(deleteProduct())
+            const res = await userRequest.delete(`/api/cart/${id}`)     
             //TODO: display Success component
         }catch(err){
             console.log("error", err)
