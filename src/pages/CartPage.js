@@ -98,6 +98,10 @@ const DelButton = styled.div`
     position: absolute;
     right: 0px;
     top: 0px;
+
+    ${mobile({
+        top: "45%"
+    })}
     
 `
 
@@ -112,7 +116,7 @@ const ProductDeteail = styled.div`
 `
 const Image = styled.img`
     width: 200px;
-    max-width: 100%;
+    max-width: 30%;
     object-fit: cover;
 
 `

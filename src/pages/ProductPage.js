@@ -23,6 +23,7 @@ const Wrapper = styled.div`
     
     ${mobile({
         flexDirection: "column",
+        padding: "20px 10px"
     })}
 
 `
@@ -56,7 +57,10 @@ const Image = styled.img`
 const InfoContainer = styled.div`
     padding: 0px 20px;
     flex: 1;
-    
+
+    ${mobile({
+        padding: "0px 0px",
+    })}
     
 `
 
@@ -269,7 +273,7 @@ function ProductPage(props) {
         const {data:{order}} = await userRequest.post("api/buy/checkout",{productID: product._id, quantity:ProductQuentity, size, color:Color,user:user._id});
         const {data:{key}} = await userRequest.get("api/buy/getkey");
 
-        if(!order || key){
+        if(!order || !key){
             return console.log("error accured while creating order");
             //TODO: add Message Prompt
         }
