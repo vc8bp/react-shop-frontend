@@ -208,8 +208,10 @@ const Button = styled.button`
 function ProductPage(props) {
     const [product, setProduct] = useState({})
     const [ProductQuentity, setProductQuentity] = useState(1)
-    const [Color, setColor] = useState();
-    const [size, setsize] = useState();
+
+    //setting defalut size and color for product
+    const [Color, setColor] = useState((product?.color?.length >= 0 && `#${product.color[0]}`) || "#000000");
+    const [size, setsize] = useState((product?.size?.length >= 0 && product.size[0]) || "XL");
     
     //to change title as soon as component mounts
     useEffect(() => {
@@ -270,7 +272,17 @@ function ProductPage(props) {
         } 
 
 
-        const {data:{order}} = await userRequest.post("api/buy/checkout",{productID: product._id, quantity:ProductQuentity, size, color:Color,user:user._id});
+        const {data:{order}} = await userRequest.post("api/buy/checkout",{
+            user:user._id,
+            product: {
+                productID: product._id,
+                quantity:ProductQuentity,
+                size, 
+                color:Color,
+            },
+            type: "product"
+        });
+
         const {data:{key}} = await userRequest.get("api/buy/getkey");
 
         if(!order || !key){

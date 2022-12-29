@@ -10,6 +10,7 @@ import  { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { userRequest } from '../axiosReqMethods'
 import { deleteProduct } from '../redux/cartRedux'
+import addDynamicScript from '../helpers/addDynamicScript'
 
 
 
@@ -268,20 +269,19 @@ function CartPage(props) {
         document.title = `SatnamCreation - ${props.title}`
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
     
-    const userID = useSelector(state => state?.user?.currentUser?._id);
+    const user = useSelector(state => state?.user?.currentUser);
 
 
     //get User Cart
     useEffect( async () => {
-        if(userID) {
-            try{
-                const res = await userRequest.get(`/api/cart/info/${userID}`)
+        if(user) {
+            try{               
+                const res = await userRequest.get(`/api/cart/info/${user._id}`)
                 setCartProductRes(res.data)
             }catch(err){
                 console.log("error", err)
                 //TODO: display error component
-            }
-            
+            }           
         }
     }, [])
 
@@ -293,13 +293,13 @@ function CartPage(props) {
             return total + (item.price * item.quantity)
         },0)
         setTotalCartPrice(total);
-    }, [cartProductRes?.products, cartProductRes?.products.map(p => p.quantity)])//map is used bcz we need to reRender this component if any products quantity changes so we maped true every product quantity
+    }, [cartProductRes?.products, cartProductRes?.products?.map(p => p.quantity)])//map is used bcz we need to reRender this component if any products quantity changes so we maped true every product quantity
      
     //delete product
     const handleDeleteProduct = async (e, id) => {
         e.preventDefault();
         try{
-            const filteredProducts = cartProductRes.products.filter(p => {
+            const filteredProducts = cartProductRes?.products?.filter(p => {
                 return id !== p.productID
             })
             setCartProductRes(e => ({...e, products: filteredProducts}))
@@ -328,6 +328,53 @@ function CartPage(props) {
             console.log(error)
         }
     }
+
+
+    const handleCheckout = async () => {
+        if(!user) {
+            return navigate('/login');
+        } 
+        if(!window.Razorpay) {
+            await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js") //script is not loading at first time dk why so i added this XD
+        } 
+
+        const {data:{order}} = await userRequest.post("api/buy/checkout",{
+            user:user._id,
+            type: "cart"
+        });
+
+        const {data:{key}} = await userRequest.get("api/buy/getkey");
+
+        if(!order || !key){
+            return console.log("error accured while creating order");
+            //TODO: add Message Prompt
+        }
+          
+        const options = {
+            key: key, //reciving key from backend for security purpose  
+            amount: order.ammount, 
+            currency: "INR",
+            name: `${user.firstName} ${user.lastName}'s Cart`,
+            description :  `${user.firstName} ${user.lastName}'s Cart includes total ${cartProductRes?.products?.length}`,
+            image: "https://toppng.com/uploads/preview/astronaut-art-png-jpg-royalty-free-stock-astronauta-dibujo-11562856188offwkk8qo8.png",
+            order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            callback_url: "http://localhost:4000/api/buy/paymentVerify",  
+            prefill: {
+                name: `${user.firstName} ${user.lastName}`,
+                email: user.email,
+                contact: user.number
+            },
+            notes: {
+                address: "Razorpay Corporate Office"
+            },
+            theme: {
+                color: "#40a0a0"
+            }
+        };      
+        const rzp1 = new window.Razorpay(options);
+        rzp1.open();       
+        setCartProductRes(null)
+    }
     
 
 
@@ -345,10 +392,12 @@ function CartPage(props) {
                 </TopTexts>
                 <TopButton type="filled">CheckOut Now</TopButton>
             </Top>
+            {cartProductRes?.productFound === true
+            ? 
             <Bottom>
                 <Info>
-                    {cartProductRes?.products ? 
-                    cartProductRes.products.map((product) => (
+                    
+                    {cartProductRes?.products?.map((product) => (
                         <Product key={product.productID}>
                             <DelButton onClick={(e) => handleDeleteProduct(e,product.productID)}>
                                 <ClearOutlined style={{fontSize: "40px" , color: "#AB2A28"}}/>
@@ -376,28 +425,29 @@ function CartPage(props) {
                                 <ProductPrice>{product.price}</ProductPrice>
                             </PriceDeteail>
                         </Product>
-                    ))
-                :
-                <p>No Products In cart found</p>}
+                    ))}
                     <Hr/>
                 </Info>
                 <Summary>
                     <SummaryTitle>Products</SummaryTitle>
-                        {cartProductRes?.products.map((product) => (
+                        {cartProductRes?.products?.map((product) => (
                             <SummaryItem key={product._id}>
                                 <SummaryText>{product.title}</SummaryText>
-                                <SummaryPrice>{product.price * product.quantity}</SummaryPrice>
+                                <SummaryPrice>{(product.price * product.quantity)?.toFixed(2)}</SummaryPrice>
                             </SummaryItem>
                         ))}
                         <SummaryItem type="total">
                             <SummaryText >Total</SummaryText>
-                            <SummaryPrice>{totalCartPrice}</SummaryPrice>
+                            <SummaryPrice>{totalCartPrice?.toFixed(2)}</SummaryPrice>
                         </SummaryItem>
                         <ButtonWrapper>
-                            <Button>Check out</Button>
+                            <Button onClick={handleCheckout} >Check out</Button>
                         </ButtonWrapper>    
                 </Summary>
+            
             </Bottom>
+            :
+            <p>{cartProductRes?.message}</p>}
         </Wrapper>
         <NewsLetter/>
         <Footer/>
