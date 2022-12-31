@@ -44,6 +44,7 @@ const Image = styled.img`
     object-fit: cover;
     object-position: center;
     transition: transform 0.5s ease-in-out;
+    
 
     // so many for browser supports
     cursor: -moz-zoom-in; 
@@ -192,6 +193,7 @@ const Button = styled.button`
     background-color: white;
     margin: 5px 5px;
     cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     &:hover {
         background-color: #c3c7c4;
     }
@@ -295,7 +297,7 @@ function ProductPage(props) {
             amount: order.ammount, 
             currency: "INR",
             name: product.title,
-            description : product.desc || "random description",
+            description : `${product.desc.slice(0, 252)}...` || "random description", //slicing it because razor pay dosent allow desc length more then 255
             image: product.img,
             order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             callback_url: "http://localhost:4000/api/buy/paymentVerify",
