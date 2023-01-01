@@ -51,23 +51,23 @@ export const hero = [
 export const Categoris = [
     {
         id: 1,
-        cat: "medicin",
-        img: "https://png.pngtree.com/png-clipart/20200701/original/pngtree-healthcare-products-png-image_5395521.jpg",
-        title: "Title 1",
+        cat: "jewelery",
+        img: "https://media.istockphoto.com/photos/elegant-jewelry-set-of-white-gold-ring-necklace-and-earrings-with-picture-id1216928523?b=1&k=20&m=1216928523&s=612x612&w=0&h=Gw14mYpKwp24oaX2O03m7W83v6p5_Y_hnfa2tKbQtLs=",
+        title: "jewelery",
         
     },
     {
         id: 2,
-        cat: "grooming",
-        img: "https://png.pngtree.com/png-clipart/20190614/original/pngtree-beauty-makeups-cosmetic-skin-care-products-png-image_3799537.jpg",
-        title: "Title 2",
+        cat: "clotiong",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPD8NKQTHTsZ6HnOE52Ghjg9QqwzsP_NiZYg&usqp=CAU",
+        title: "clothing",
         
     },
     {
         id: 3,
-        cat: "electronic",
+        cat: "dummy",
         img: "https://png.pngtree.com/png-clipart/20190920/original/pngtree-technology-product-office-computer-png-image_4642139.jpg",
-        title: "Title 3",
+        title: "dummy",
         
     },
     

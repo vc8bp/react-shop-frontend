@@ -6,8 +6,9 @@ import {mobile} from '../Responsive'
 
 const Container = styled.div`
     display: flex;
+    flex-wrap: wrap;
     padding: 20px;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     object-fit: cover;
     object-position: center;

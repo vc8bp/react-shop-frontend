@@ -3,28 +3,20 @@ import React from 'react'
 import {mobile} from '../Responsive'
 import { Link } from 'react-router-dom';
 
-const Container = styled.div`
-        flex: 1;
-        margin: 3px;
-        max-height: 50vh;
-        height: fit-content;
-        //min-height: 300px;
-        position: relative;
-        overflow: hidden;
-        justify-content: center;
-        ${mobile({
-            Height: "30vh",
-            maxWidth: "350px",
-            minWidth: "200px",
-            height: "fit-content",
-         })} 
-    `
-    const Image = styled.img`
-        width: 100%;
-        /* object-fit: cover;
-        object-position: center; */
 
-    `
+const Image = styled.img`
+        width: 100%;
+        width: 400px;
+        height: 350px;
+        max-width: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: all 0.3s ease-in-out;
+        
+        
+`
+
+    
     const Info = styled.div`
         position: absolute;
         left: 0;
@@ -47,10 +39,41 @@ const Container = styled.div`
     const Button = styled.button`
         border: none;
         padding: 10px;
-        background-color: white;
         cursor: pointer;
         color: gray;
         font-weight: 300;
+        transition: all 0.3s ease-in-out; 
+        
+    `
+
+    const Container = styled.div`
+        flex: 1;
+        margin: 3px;
+        width: 400px;
+        max-width: 80%;
+        object-fit: cover;
+        margin: auto;
+
+        //min-height: 300px;
+        position: relative;
+        overflow: hidden;
+        justify-content: center;
+        transition: all 0.3s ease-in-out;
+        ${mobile({
+            Height: "30vh",
+            maxWidth: "350px",
+            minWidth: "200px",
+            height: "fit-content",
+        })} 
+
+        :hover ${Image} {
+            transform: scale(1.1)
+        }
+
+        &:hover ${Button}{
+            background-color: white;
+            color: black;
+        }
     `
 
 
