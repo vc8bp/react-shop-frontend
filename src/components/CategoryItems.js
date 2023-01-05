@@ -1,80 +1,85 @@
 import styled from 'styled-components';
 import React from 'react'
 import {mobile} from '../Responsive'
+import '../app.css'
 import { Link } from 'react-router-dom';
 
 
 const Image = styled.img`
-        width: 100%;
-        width: 400px;
-        height: 350px;
-        max-width: 100%;
-        object-fit: cover;
-        object-position: center;
-        transition: all 0.3s ease-in-out;
-        
+    width: 100%;
+    height:100%;
+
+    object-fit: cover;
+    object-position: center;
+    display: flex;
+    justify-content: center;
+    margin:auto;
+    transition: all 0.3s ease-in-out;
+    
         
 `
 
     
-    const Info = styled.div`
-        position: absolute;
-        left: 0;
-        top: 0;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        
-        
-    `
-    const Title = styled.h1`
-        margin-bottom: 20px;
-        color: white;
+const Info = styled.div`
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    height: 100%;
+    transition: all 0.3s ease-in-out;
+
 
     
-    `
-    const Button = styled.button`
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-        color: gray;
-        font-weight: 300;
-        transition: all 0.3s ease-in-out; 
-        
-    `
+`
+const Title = styled.h1`
+    font-size: 40px;
+    font-weight: 600;
+    color: white;
 
-    const Container = styled.div`
-        flex: 1;
-        margin: 3px;
-        width: 400px;
-        max-width: 80%;
-        object-fit: cover;
-        margin: auto;
 
-        //min-height: 300px;
-        position: relative;
-        overflow: hidden;
-        justify-content: center;
-        transition: all 0.3s ease-in-out;
-        ${mobile({
-            Height: "30vh",
-            maxWidth: "350px",
-            minWidth: "200px",
-            height: "fit-content",
-        })} 
+`
+const Button = styled.button`
+    padding: 10px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0px 0px 1px #888888;
+    border-radius: 0.5vmin;
+    transition: all 0.3s ease-in-out;
 
-        :hover ${Image} {
-            transform: scale(1.1)
-        }
+    
+`
 
-        &:hover ${Button}{
-            background-color: white;
-            color: black;
-        }
-    `
+const Container = styled.div`
+    position: relative;
+    margin: 3px;
+    width: 400px;
+    height: 500px;
+    max-width: 80%;
+    overflow: hidden;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+    :hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    }
+    
+    :hover ${Image} {
+        transform: scale(1.1)
+    }
+
+    &:hover ${Info}{
+        backdrop-filter: blur(3px);
+        background-color: rgba(0,0,0, 0.2);
+    }
+
+`
 
 
     const link = {
@@ -94,7 +99,6 @@ function CategoryItems(item) {
 
     const { title, img, cat } = item.item;
   return (
-    <div>
         <Container>
             <Image src={img}/>
             <Info>
@@ -102,8 +106,6 @@ function CategoryItems(item) {
                 <Button><Link onClick={HandleClick} style={link} to={`/products/${cat}`}>Read More</Link></Button>
             </Info>
         </Container>
-        
-    </div>
   )
 }
 

@@ -27,7 +27,8 @@ const Container = styled.div`
     position: sticky;
     top: 0;
     z-index: 9999;
-    background-color: rgba(255,255,255,.8);
+    //background-color: rgba(255,255,255,.8);
+    backdrop-filter: blur(16px);
     
     
     

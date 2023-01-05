@@ -8,11 +8,10 @@ const Container = styled.div`
     display: flex;
     flex-wrap: wrap;
     padding: 20px;
+    gap: 10px;
     justify-content: center;
     align-items: center;
-    object-fit: cover;
-    object-position: center;
-    overflow: hidden;
+    
     
     
     ${mobile({
