@@ -8,3 +8,12 @@
 body {
 
 }
+
+
+/* writed this logic here bcz it was not working on styled copoents */
+#NavBar_input:focus ~ #NavBar_ul{
+    
+    visibility: visible;
+    box-shadow: 0 5px 10px 1000px rgba(0, 0, 0, 0.1);
+}
+
