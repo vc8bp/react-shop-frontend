@@ -58,7 +58,7 @@ const Container = styled.div`
     margin: 3px;
     width: 400px;
     height: 500px;
-    max-width: 80%;
+    max-width: 100%;
     overflow: hidden;
     
     display: flex;

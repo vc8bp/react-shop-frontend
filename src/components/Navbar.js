@@ -10,7 +10,6 @@ import { useDispatch} from 'react-redux'
 import { logoutUser } from '../redux/userRedux'
 import { publicRequest, userRequest } from "../axiosReqMethods";
 import { setProduct } from "../redux/cartRedux";
-import "../app.css"
 
 
 
@@ -60,13 +59,16 @@ const SearchContainer = styled.div`
     border-radius: 0.5vmin;
     height: 25px;
     position: relative;
+    ${mobile({
+        marginLeft: "0px"
+    })}
     
 `
 
 const Input = styled.input`
     outline: none;
     border: none;
-    background-color: transparent;
+    background-color: transparent !important;
     width: 100%;
 `
 const Ul = styled.ul`
@@ -74,21 +76,22 @@ const Ul = styled.ul`
     width: 100%;
     top : 105%;
     background-color: white;
-    border-radius: 1vmax;
+    border-radius: 0 0 1vmax 1vmax;
     backdrop-filter: blur(16px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
     padding: 0 0;
-    visibility: hidden;
     transition: all 0.00001ms ease-in-out;
-    transition-delay: 0.1s;
-    
-
+    overflow: hidden;
+    display: ${props => props.isFocus ? "block" : "none"};
+    //transition-delay: 0.5s; // this is using beacause i am doind "display: none" to ul if title target is false so wen we click on searched products li the target is getting false and the js is not running for that in my case i a redirecting  to that specific product
+  
 `
 const Li = styled.li`
     //margin: 5px 0px;
     list-style: none;
     text-align: start;
     padding: 5px 5px;
+    width: 100%;
     cursor: pointer;
 
     :hover {
@@ -193,7 +196,6 @@ function Navbar() {
     }
     const user = useSelector(state => state.user.currentUser);
     const cartSize = useSelector(state => state.cart.quantity)
-    console.log(cartSize)
 
     useEffect(() => {
         if(!user) return 
@@ -221,7 +223,17 @@ function Navbar() {
         }
         
     }
-    console.log(searchProducts)
+
+    const [isInputFocus, setIsInputFocus] = useState(false);
+    const handleFocus = (p) => {
+        setIsInputFocus(true)
+    }  
+    const handleBlur = () => {
+        setIsInputFocus(false)       
+    }  
+    const handleClick = (id) => {
+        redirect(`/product/${id}`)      
+    }  
     
   return (
     <Container>
@@ -230,11 +242,11 @@ function Navbar() {
                 <Logo><Link onClick={HandleClick} style={link} to="/">Title.</Link></Logo>
             </Left>
             <Center>
-            <SearchContainer id="NavBar_searchContainer">
-                    <Input id="NavBar_input" onChange={handleSearch}></Input><Search style={{colour: "grey", fontSize: 16, cursor: "pointer" }}/>  
-                    <Ul id="NavBar_ul">
+            <SearchContainer>
+                    <Input onFocus={handleFocus} onBlur={() => handleBlur()} onChange={handleSearch} placeholder="Search"></Input><Search style={{colour: "grey", fontSize: 16, cursor: "pointer" }}/>  
+                    <Ul isFocus={isInputFocus}>
                         {searchProducts?.map((p) => {   
-                            return <Li onClick={() => {p._id && redirect(`/product/${p._id}`) }} >{p.title}</Li>
+                            return <Li key={p._id} onMouseDown={() => handleClick(p._id)}>{p.title}</Li> //used onMouseDown because onClick was not working over there the Input > onFocus event was overriding this event
                         })}
                         
                     </Ul>

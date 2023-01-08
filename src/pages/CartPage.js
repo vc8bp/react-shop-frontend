@@ -283,6 +283,10 @@ function CartPage(props) {
                 //TODO: display error component
             }           
         }
+
+        return () => {
+            setCartProductRes(null)
+        }
     }, [])
 
     //count cart total

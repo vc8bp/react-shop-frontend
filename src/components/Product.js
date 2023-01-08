@@ -17,6 +17,7 @@ const Container = styled.div`
     
 `
 
+
 function Product(props) {
   const {sort, cat, filter} = props;
 
@@ -84,6 +85,7 @@ function Product(props) {
   
   return (
     <Container className='container'>
+
         { cat ?
         filteredproducts.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})
         : products.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})

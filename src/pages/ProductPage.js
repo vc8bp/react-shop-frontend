@@ -13,6 +13,7 @@ import { addProduct} from '../redux/cartRedux'
 import { useDispatch, useSelector } from 'react-redux'
 import addDynamicScript from '../helpers/addDynamicScript'
 import { useRef } from 'react'
+import Loading from '../components/Loading'
 
 
 
@@ -45,8 +46,14 @@ const Image = styled.img`
     object-position: center;
     transition: transform 0.5s ease-in-out;
     
+     // so many for browser supports for imageDragable: false
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 
-    // so many for browser supports
+    // so many for browser supports for zoom cursor
     cursor: -moz-zoom-in; 
     cursor: -webkit-zoom-in; 
     cursor: zoom-in;
@@ -210,7 +217,8 @@ const Button = styled.button`
 function ProductPage(props) {
     const [product, setProduct] = useState({})
     const [ProductQuentity, setProductQuentity] = useState(1)
-
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState(null)
     //setting defalut size and color for product
     const [Color, setColor] = useState((product?.color?.length >= 0 && `#${product.color[0]}`) || "#000000");
     const [size, setsize] = useState((product?.size?.length >= 0 && product.size[0]) || "XL");
@@ -225,15 +233,23 @@ function ProductPage(props) {
     const id = location.pathname.split("/")[2];
     useEffect(() => {
       const gatData = async () => {
+        setIsLoading(true)
         try {
             const data = await publicRequest.get(`/api/products/info/${id}`);
             setProduct(data.data);
         } catch (error) {
             console.log(error)
+            setError(error.response.data)
             //TODO: show error
-        }         
+        }    
+        setIsLoading(false)     
       }
       gatData()
+
+      return () => {
+        setProduct({})
+        setProductQuentity(1)
+      }
     }, [id])
    
     const HandlClick = (type) => {   
@@ -259,6 +275,7 @@ function ProductPage(props) {
             !res.data.productExisted && dispatch(addProduct()) 
         } catch (error) {
             console.log(error)
+            
             //TODO: show error
         }
     }
@@ -337,9 +354,9 @@ function ProductPage(props) {
       <Announcments/>
       <Navbar/>
         {
-            product ?
-            <Wrapper>
-        
+            isLoading ? <Loading/> : 
+            (error ? <h2>{error}</h2> :
+            <Wrapper>    
             <ImgContainer>
               <Image src={product.img} onMouseMove={handleImgMouseEnter} ref={img} onMouseLeave={hadleImgMouseLeave}/>
             </ImgContainer>
@@ -375,8 +392,7 @@ function ProductPage(props) {
                           <CartValue>{ProductQuentity}</CartValue>
                           <ValueARButton>
                               <Add onClick={()=>HandlClick("inc")}/>
-                          </ValueARButton>
-                          
+                          </ValueARButton>                          
                         </ValueContainer>
                         <PurchaeContainer>
                           <Button onClick={handleSubClick}>Add To Cart</Button>
@@ -385,8 +401,7 @@ function ProductPage(props) {
                       </CartContainer>
             </InfoContainer>
   
-        </Wrapper>
-            : <h1>Loading...</h1>
+        </Wrapper> )
         }
       
       <NewsLetter/>
