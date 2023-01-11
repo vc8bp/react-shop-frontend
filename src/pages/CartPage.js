@@ -243,11 +243,18 @@ const ButtonWrapper = styled.div`
 `
 const Button = styled.button`
     background-color: black;
+    cursor: pointer;   
     color: white;
     border: none;
     padding: 20px;
     width: 80%;
     margin-top: 20px;
+
+    :disabled {
+        background-color: #6b6d70;
+        cursor: not-allowed;
+    }
+
     ${mobile({
         width: "50%",
         borderRadius: "5%"  ,   
@@ -256,8 +263,6 @@ const Button = styled.button`
     
     
 `
-
-
 
 function CartPage(props) {
     const dispatch = useDispatch();
@@ -320,10 +325,6 @@ function CartPage(props) {
     const handleProductQuantityChange = async (productID, quantity, incORdec) => {
         try {
             const res = await userRequest.put(`/api/cart/updatequantity/${productID}/${quantity}`)
-            // const requestedProsuct = cartProductRes.filter(p => {
-            //     return p.productID === productID
-            // })
-            console.log({productID})
             const productIndex = cartProductRes.products.findIndex(p => p.productID === productID)
             console.log({productIndex})
             const newProduct = cartProductRes.products[productIndex].quantity = quantity
@@ -333,11 +334,14 @@ function CartPage(props) {
         }
     }
 
-
+    const [isCheckoutLoading, setischeckoutLoading] = useState(false);
     const handleCheckout = async () => {
+
         if(!user) {
             return navigate('/login');
         } 
+
+        setischeckoutLoading(true) 
         if(!window.Razorpay) {
             await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js") //script is not loading at first time dk why so i added this XD
         } 
@@ -348,6 +352,7 @@ function CartPage(props) {
         });
 
         const {data:{key}} = await userRequest.get("api/buy/getkey");
+        setischeckoutLoading(false) 
 
         if(!order || !key){
             return console.log("error accured while creating order");
@@ -389,7 +394,7 @@ function CartPage(props) {
         <Wrapper>
             <Title>Cart</Title>
             <Top>
-                <TopButton>Continue Shopping</TopButton>
+                <TopButton >Continue Shopping</TopButton>
                 <TopTexts>
                     <TopText>Shopping ba</TopText>
                     <TopText>Your Wishlist</TopText>
@@ -445,7 +450,7 @@ function CartPage(props) {
                             <SummaryPrice>{totalCartPrice?.toFixed(2)}</SummaryPrice>
                         </SummaryItem>
                         <ButtonWrapper>
-                            <Button onClick={handleCheckout} >Check out</Button>
+                            <Button onClick={handleCheckout} disabled={isCheckoutLoading? true : false}>Check out</Button>
                         </ButtonWrapper>    
                 </Summary>
             

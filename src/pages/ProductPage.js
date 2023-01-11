@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import addDynamicScript from '../helpers/addDynamicScript'
 import { useRef } from 'react'
 import Loading from '../components/Loading'
+import axios from 'axios'
+import ReviewComp from '../components/ReviewComp'
 
 
 
@@ -228,6 +230,9 @@ function ProductPage(props) {
         document.title = `SatnamCreation - ${props.title}`
     }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
+    //axios req used to cancel prev request
+    const ourRequest = axios.CancelToken.source()
+
     //fetching product info
     const location = useLocation();
     const id = location.pathname.split("/")[2];
@@ -235,7 +240,7 @@ function ProductPage(props) {
       const gatData = async () => {
         setIsLoading(true)
         try {
-            const data = await publicRequest.get(`/api/products/info/${id}`);
+            const data = await publicRequest.get(`/api/products/info/${id}`, {cancelToken: ourRequest.token});
             setProduct(data.data);
         } catch (error) {
             console.log(error)
@@ -247,6 +252,7 @@ function ProductPage(props) {
       gatData()
 
       return () => {
+        ourRequest.cancel()
         setProduct({})
         setProductQuentity(1)
       }
@@ -356,6 +362,7 @@ function ProductPage(props) {
         {
             isLoading ? <Loading/> : 
             (error ? <h2>{error}</h2> :
+            <>
             <Wrapper>    
             <ImgContainer>
               <Image src={product.img} onMouseMove={handleImgMouseEnter} ref={img} onMouseLeave={hadleImgMouseLeave}/>
@@ -401,9 +408,11 @@ function ProductPage(props) {
                       </CartContainer>
             </InfoContainer>
   
-        </Wrapper> )
+        </Wrapper> 
+        <ReviewComp productID={product._id} productName={product.title} rating={product.ratingsAverage} ratingCount={product.ratingsQuantity}/>
+        </>
+        )
         }
-      
       <NewsLetter/>
       <Footer/>
       
