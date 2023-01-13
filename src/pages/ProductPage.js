@@ -268,7 +268,7 @@ function ProductPage(props) {
     const user = useSelector(state => state.user.currentUser);   
     const handleSubClick = async () => { 
         try {
-            const res = await userRequest.post(`/api/cart`,{
+            const res = await userRequest.post(`/api/cart/${user._id}`,{
                 products : [
                     {
                         productID: product.productno,
