@@ -16,6 +16,7 @@ import { useRef } from 'react'
 import Loading from '../components/Loading'
 import axios from 'axios'
 import ReviewComp from '../components/ReviewComp'
+import WriteaReview from '../components/WriteaReview'
 
 
 
@@ -224,6 +225,7 @@ function ProductPage(props) {
     //setting defalut size and color for product
     const [Color, setColor] = useState((product?.color?.length >= 0 && `#${product.color[0]}`) || "#000000");
     const [size, setsize] = useState((product?.size?.length >= 0 && product.size[0]) || "XL");
+    const [modalisOpen, setmodalIsOpen] = useState(false)
     
     //to change title as soon as component mounts
     useEffect(() => {
@@ -268,7 +270,7 @@ function ProductPage(props) {
     const user = useSelector(state => state.user.currentUser);   
     const handleSubClick = async () => { 
         try {
-            const res = await userRequest.post(`/api/cart/${user._id}`,{
+            const res = await userRequest.post(`/api/cart`,{
                 products : [
                     {
                         productID: product.productno,
@@ -409,7 +411,8 @@ function ProductPage(props) {
             </InfoContainer>
   
         </Wrapper> 
-        <ReviewComp productID={product._id} productName={product.title} rating={product.ratingsAverage} ratingCount={product.ratingsQuantity}/>
+        <WriteaReview product={product} setModal={setmodalIsOpen} isOpen={modalisOpen} />
+        <ReviewComp productID={product._id} productName={product.title} rating={product.ratingsAverage} ratingCount={product.ratingsQuantity} setModal={setmodalIsOpen}/>
         </>
         )
         }

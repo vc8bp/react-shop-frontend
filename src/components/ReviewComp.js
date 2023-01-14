@@ -65,7 +65,7 @@ const Bottom = styled.div`
 
 
 
-function ReviewComp({productID, productName, ratingCount, rating}) {
+function ReviewComp({productID, productName, ratingCount, rating, setModal}) {
     const [reviews, setReviews] = useState();
     useEffect(() => {
       const fetchReviews = async () => {
@@ -85,7 +85,7 @@ function ReviewComp({productID, productName, ratingCount, rating}) {
         <Top>
             <TitleWAR>
                 <Title>{productName}</Title>
-                <Button><DriveFileRenameOutlineIcon/> Write a Review</Button>
+                <Button onClick={() => setModal(true)} ><DriveFileRenameOutlineIcon/> Write a Review</Button>
             </TitleWAR>
             <RatingWrapper>
                 <RatingCount>{rating}</RatingCount><Rating value={rating} readOnly precision={0.1} /> 
