@@ -1,5 +1,6 @@
 import { Start, loginSucces, Failed, signUpSucces, signupFailed, resetError  } from './userRedux';
 import { publicRequest } from '../axiosReqMethods';
+import { setError } from './errorRedux';
 //login
 export const login = async ( dispatch, user, navigate ) => {
     const { email, password, ip } = user;
@@ -12,8 +13,8 @@ export const login = async ( dispatch, user, navigate ) => {
         navigate(-1)
     
     } catch (error) {
-        dispatch(Failed(error.response.data))
-
+        dispatch(Failed(error.response.data.message))
+        dispatch(setError(error.response.data.message))
         //reseting error
         setTimeout(() => {
             dispatch(resetError())
@@ -26,13 +27,11 @@ export const signUp = async ( dispatch, user) => {
     
     dispatch(Start())
     try {
-        console.log(user)
-        const res = await publicRequest.post("api/auth/register", user)
-        
-        console.log("res : " + res.data)
+        const res = await publicRequest.post("api/auth/register", user)   
         dispatch(signUpSucces(res.data))
     } catch (error) {  
-        dispatch(signupFailed(error.response.data));
+        dispatch(signupFailed(error.response.data.message));
+        dispatch(setError(error.response.data.message))
 
         //reseting error
         setTimeout(() => {

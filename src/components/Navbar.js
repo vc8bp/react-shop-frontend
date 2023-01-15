@@ -182,14 +182,6 @@ const MenueItem = styled.div`
 
 function Navbar() {
     const redirect = useNavigate();
-
-    const HandleClick = () => {
-
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        });
-      }
     const dispatch = useDispatch()
     const handleLogout = () => {       
         dispatch(logoutUser())
@@ -239,7 +231,7 @@ function Navbar() {
     <Container>
         <Wrapper>
             <Left>
-                <Logo><Link onClick={HandleClick} style={link} to="/">Title.</Link></Logo>
+                <Logo><Link onClick={() => redirect("/")} style={link} to="/">Title.</Link></Logo>
             </Left>
             <Center>
             <SearchContainer>

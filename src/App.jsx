@@ -15,6 +15,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 import { useSelector } from "react-redux";
 import ResetPassword from "./pages/ResetPassword";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import MessageComponent from './components/MessageComponent';
+import ScrollToTop from './components/ScrollToTop';
 
 
 const App = () => {
@@ -23,6 +25,7 @@ const App = () => {
   return (
     
     <>
+    <ScrollToTop/>
     <Routes>
       <Route exact path="/"  element={<Home title="Home" />}  />
       <Route exact path="/login"  element={ user ? <Navigate to="/"/> : <Login title="Login"/>}/>
@@ -34,6 +37,7 @@ const App = () => {
       <Route exact path="/resetpassword/:token"  element={<ResetPassword title="ReseetPassword"/>}/>
       <Route exact path="/paymentSuccess"  element={<PaymentSuccess title="PaymentSuccess"/>}/>
     </Routes>
+    <MessageComponent/>
     <BackToTopBTN/>  
     </>
   );

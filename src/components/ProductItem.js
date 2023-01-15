@@ -108,23 +108,12 @@ const link = {
 
 function ProductItem(data) {
 
-
-
-  const HandleClick = () => {
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-      
-    });
-  }
- 
   const { img, title, _id, desc, price} = data.data;
 
   return (
     
       <Container>
-        <Link style={link} onClick={HandleClick} to={`/product/${_id}`}>
+        <Link style={link}  to={`/product/${_id}`}>
         <Wrapper>
           <Image src={img} /> 
         </Wrapper>

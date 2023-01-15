@@ -11,6 +11,9 @@ import { useNavigate } from 'react-router-dom'
 import { userRequest } from '../axiosReqMethods'
 import { deleteProduct } from '../redux/cartRedux'
 import addDynamicScript from '../helpers/addDynamicScript'
+import { setError } from '../redux/errorRedux'
+import EmptyCartComponent from '../components/EmptyCartComponent'
+import Loading from '../components/Loading'
 
 
 
@@ -268,6 +271,7 @@ function CartPage(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate()
     const [cartProductRes, setCartProductRes] = useState();
+    const [fetchCartLoading, setFetchCartLoading] = useState();
 
     //to change title as soon as component mounts
     useEffect(() => {
@@ -280,15 +284,18 @@ function CartPage(props) {
     //get User Cart
     useEffect( async () => {
         if(user) {
-            try{               
+            try{      
+                setFetchCartLoading(true)         
                 const res = await userRequest.get(`/api/cart/info/${user._id}`)
+                setFetchCartLoading(false)
                 setCartProductRes(res.data)
+                
             }catch(err){
                 console.log("error", err)
-                //TODO: display error component
+                setFetchCartLoading(false)
+                dispatch(setError(err.response.data.message))      //setting error       
             }           
         }
-
         return () => {
             setCartProductRes(null)
         }
@@ -297,7 +304,6 @@ function CartPage(props) {
     //count cart total
     const [totalCartPrice, setTotalCartPrice] = useState(0)
     useEffect(() => {   
-        console.log("me runed")
         const total = cartProductRes?.products.reduce((total, item) => {
             return total + (item.price * item.quantity)
         },0)
@@ -314,10 +320,10 @@ function CartPage(props) {
             setCartProductRes(e => ({...e, products: filteredProducts}))
             dispatch(deleteProduct())
             const res = await userRequest.delete(`/api/cart/${id}`)     
-            //TODO: display Success component
-        }catch(err){
-            console.log("error", err)
-            //TODO: display error component
+            dispatch(setError(res.data.message))
+        }catch(error){
+            console.log("error", error)
+            dispatch(setError(error.response.data.message))
         }
     }
 
@@ -329,8 +335,10 @@ function CartPage(props) {
             console.log({productIndex})
             const newProduct = cartProductRes.products[productIndex].quantity = quantity
             setCartProductRes(p => ({...p, newProduct}))
+            dispatch(setError(res.data.message))
         } catch (error) {
             console.log(error)
+            dispatch(setError(error.response.data.message))
         }
     }
 
@@ -355,8 +363,7 @@ function CartPage(props) {
         setischeckoutLoading(false) 
 
         if(!order || !key){
-            return console.log("error accured while creating order");
-            //TODO: add Message Prompt
+            return dispatch(setError("error accured while creating order"));
         }
           
         const options = {
@@ -393,6 +400,9 @@ function CartPage(props) {
         <Navbar/>
         <Wrapper>
             <Title>Cart</Title>
+            {fetchCartLoading ? <Loading/> :
+            (cartProductRes?.products.length
+            ? <>
             <Top>
                 <TopButton >Continue Shopping</TopButton>
                 <TopTexts>
@@ -401,11 +411,8 @@ function CartPage(props) {
                 </TopTexts>
                 <TopButton type="filled">CheckOut Now</TopButton>
             </Top>
-            {cartProductRes?.productFound === true
-            ? 
             <Bottom>
-                <Info>
-                    
+                <Info>    
                     {cartProductRes?.products?.map((product) => (
                         <Product key={product.productID}>
                             <DelButton onClick={(e) => handleDeleteProduct(e,product.productID)}>
@@ -455,8 +462,8 @@ function CartPage(props) {
                 </Summary>
             
             </Bottom>
-            :
-            <p>{cartProductRes?.message}</p>}
+            </>
+            : <EmptyCartComponent/>)}
         </Wrapper>
         <NewsLetter/>
         <Footer/>

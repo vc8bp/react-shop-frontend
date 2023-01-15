@@ -2,14 +2,15 @@ import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { publicRequest } from "../axiosReqMethods"
-import ErrorComponent from "../components/ErrorComponent"
 import { mobile } from "../Responsive"
 import Navbar from "../components/Navbar"
-import { v4 as uuidv4 } from 'uuid';
+
+import { useDispatch } from "react-redux"
+import { setError } from "../redux/errorRedux"
 
 const Container = styled.div`
     width: 100vw;
-    height: calc(100vh - 60px); //60px of navbar
+    height: calc(100vh - 58px); //60px of navbar
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,26 +93,24 @@ const Button2 = styled.button`
     border-radius: 0vmax 0vmax 1vmax 1vmax;
 `
 const ForgotPassword = () => {
-
+    const dispatch = useDispatch()
     const [message, setmessage] = useState(null)
-    const [uid, setuid] = useState(null)
-
     const navigate = useNavigate();
     const [email, setEmail] = useState(null)
     
 
     const handleSubmit = async (e)  => {
-        setuid(uuidv4());
         e.preventDefault();
         try {   
-            const data = await publicRequest.post("/api/auth/forgotpass", {email})
-
+            const {data} = await publicRequest.post("/api/auth/forgotpass", {email})
+            console.log(data)
             //checking if req was success
-            data.status === 200 && setmessage(data.data)
+            if(data.sucess) {
+                dispatch(setError(data.message))
+            }
         
         } catch (error) {
-            
-            setmessage(error?.response?.data?.error)
+            dispatch(setError(error?.response?.data?.message))
         } 
     }
   return (
@@ -131,9 +130,6 @@ const ForgotPassword = () => {
 
 
     </Container>
-    {/* sending date because it will not run use effect if the message is same but you again wont to show
-        and date is always unique so use effect will */}
-    <ErrorComponent message={message} id={uid} />
     </>
   )
 }

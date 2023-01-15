@@ -4,6 +4,8 @@ import Rating from '@mui/material/Rating';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import timeSince from "../utils/timeSince.js"
 import { userRequest } from '../axiosReqMethods.js';
+import { setError } from '../redux/errorRedux.js';
+import { useDispatch } from 'react-redux';
 
 const Container = styled.div`
     display: flex;
@@ -56,15 +58,16 @@ const Report = styled.div`
 
 
 function ReviewSingleComp({review}) {
-    console.log("since", timeSince(review.createdAt))
-
+    const dispatch = useDispatch();
     const handleUpVote = async () => {
         try {
-            userRequest.put(`/api/review/upvote/${review._id}`)
+            const {data} = await userRequest.put(`/api/review/upvote/${review._id}`)
+            dispatch(setError(data.message))
         } catch (error) {
             console.log(error)
+            dispatch(setError(error.response.data.message))
         }
-    }
+    }   
 
   return (
     <Container>
@@ -86,8 +89,7 @@ function ReviewSingleComp({review}) {
                 </Helpful>
                 <Report>Report as inappropriate</Report>
             </Feedback>
-        </Right>
-        
+        </Right>  
     </Container>
   )
 }

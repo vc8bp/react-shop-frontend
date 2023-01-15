@@ -89,21 +89,13 @@ const Container = styled.div`
 
 function CategoryItems(item) {
 
-    const HandleClick = () => {
-
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth',
-        });
-      }
-
     const { title, img, cat } = item.item;
   return (
         <Container>
             <Image src={img}/>
             <Info>
                 <Title>{title}</Title>
-                <Button><Link onClick={HandleClick} style={link} to={`/products/${cat}`}>Read More</Link></Button>
+                <Button><Link style={link} to={`/products/${cat}`}>Read More</Link></Button>
             </Info>
         </Container>
   )

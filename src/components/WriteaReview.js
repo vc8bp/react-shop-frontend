@@ -3,9 +3,8 @@ import ModalComp from './ModalComp'
 import styled from 'styled-components'
 import { Rating } from '@mui/material'
 import { userRequest } from '../axiosReqMethods'
-import { useSelector } from 'react-redux'
-import ErrorComponent from './ErrorComponent'
-import {v4 as uuid} from 'uuid'
+import { useDispatch, useSelector } from 'react-redux'
+import { setError } from '../redux/errorRedux'
 
 const Container = styled.div`
     width: 100%;
@@ -14,6 +13,7 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    text-align: center;
 `
 const UserWrapper = styled.div`
     width: 100%;
@@ -36,6 +36,7 @@ const RatingWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    max-height: 300px;
 `
 const TextBox = styled.textarea`
     width: 400px;
@@ -63,24 +64,32 @@ const Button = styled.button`
     font-weight: 600;
     color: ${p => p.T==="submit" ? "white": "teal"};
     cursor: pointer;
+
+    &:disabled {
+        background-color: #c0f3f3;
+        border: 1px solid #c0f3f3;
+        cursor: not-allowed;
+        color: black;
+    }
 `
 
 
 function WriteaReview({product, isOpen, setModal}) {
+    const dispatch = useDispatch()
     const user = useSelector(d => d.user.currentUser)
     const [review, setReview] = useState("")
     const [rating, setRating] = useState(0)
-    const [responce, setResponce] = useState("")
 
     const handleSubmit = async () => {
         console.log("me runed")
         try {           
             const {data} = await userRequest.post(`/api/review/${product._id}`,{rating, review})
-            if(data.success){
-                console.log(data.message);
-            }
+            dispatch(setError(data.message))
+            setModal(false)
         } catch (error) {
-            console.log(error.response.data.message)
+            dispatch(setError(error.response.data.message))
+            setRating(0)
+            setReview("")
         }
     }
 
@@ -102,11 +111,11 @@ function WriteaReview({product, isOpen, setModal}) {
                     precision={0.1}
                 >           
                 </Rating>
-                <TextBox placeholder='Share your thoughts on this product...' onChange={(e) => setReview(e.target.value)}></TextBox>
+                <TextBox placeholder='Share your thoughts on this product...' value={review} onChange={(e) => setReview(e.target.value)}></TextBox>
             </RatingWrapper>
             <ButtonWrapper>
                 <Button onClick={() => setModal(false)} >Cancel</Button>
-                <Button T="submit" onClick={handleSubmit}>Submit</Button>
+                <Button T="submit" onClick={handleSubmit} disabled={!review && !rating ? true : false}>Submit</Button>
             </ButtonWrapper>
         </Container>
     </ModalComp>

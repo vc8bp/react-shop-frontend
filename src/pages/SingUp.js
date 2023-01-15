@@ -12,7 +12,7 @@ import axios from 'axios';
 
 const Container = styled.div`
     width: 100vw;
-    height: calc(100vh - 60px); //60px of navbar
+    height: calc(100vh - 58px); //60px of navbar
     display: flex;
     justify-content: center;
     align-items: center;

@@ -2,16 +2,17 @@ import styled from "styled-components"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { publicRequest } from "../axiosReqMethods"
-import ErrorComponent from "../components/ErrorComponent"
 import { mobile } from '../Responsive'
 import Navbar from "../components/Navbar"
 import { CheckCircleOutlined } from "@material-ui/icons"
+import { useDispatch } from "react-redux"
+import { setError } from "../redux/errorRedux"
 //import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 
 
 const Container = styled.div`
     width: 100vw;
-    height: calc(100vh - 60px); //60px of navbar
+    height: calc(100vh - 58px); //60px of navbar
     display: flex;
     justify-content: center;
     align-items: center;
@@ -128,10 +129,8 @@ const BackToLogin = styled.button`
 
 `
 const ResetPassword = () => {
-
+    const dispatch = useDispatch()
     const [message, setmessage] = useState("")
-    const [date, setdate] = useState(null)
-
     const navigate = useNavigate();
     const [password, setpassword] = useState(null)
     const [cpassword, setCpassword] = useState(null)
@@ -144,11 +143,9 @@ const ResetPassword = () => {
 
     const [passChanged, setpassChanged] = useState(false)
     const handleSubmit = async (e)  => {
-        e.preventDefault();
-        setdate(Date.now());
-
+        e.preventDefault()
         if(password !== cpassword) {
-            setmessage("Passwords do not match")
+            dispatch(setError("Passwords do not match"))
             setCpassword("");
             setpassword("");
             return
@@ -196,9 +193,6 @@ const ResetPassword = () => {
         </Wrapper2>  
         }
     </Container>
-    {/* sending date because it will not run use effect if the message is same but you again wont to show
-        and date is always unique so use effect will */}
-    <ErrorComponent message={message} date={date} />
     </>
   )
 }

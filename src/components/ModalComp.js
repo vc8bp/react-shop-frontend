@@ -6,9 +6,9 @@ const Container = styled.div`
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 500px;
+    width: 450px;
     max-width: 90%;
-    height: 600px;
+    height: max-content;
     background-color: white;
     box-shadow: 0 0px 0px 1000px rgba(0,0,0,.3);
     padding: 20px;
