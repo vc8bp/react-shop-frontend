@@ -5,7 +5,6 @@ import { mobile } from '../Responsive'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { signUp } from '../redux/apiCalls'
-import axios from 'axios';
 
 //import { resetsignupError } from '../redux/userRedux'
 
@@ -112,8 +111,9 @@ function SingUp(props) {
   const [formValues, setFormValues] = useState(initialValue)
   const [formErrors, setFormErrors] = useState({})
   const [isSubmit, setIsSubmit] = useState(false)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
+  
   const handleOnChange = (e) => {
     const  { name, value} = e.target;
     setFormValues({ ...formValues, [name]: value})
@@ -141,30 +141,14 @@ function SingUp(props) {
   }, [formErrors])
   
 
-  const handleValidate = (values) => {
-    
+  const handleValidate = (values) => {   
     const error = {};
-
-    if(!values.firstName) {
-      error.firstName = "firstName is requires";
-    } 
-    if(!values.lastName) {
-      error.lastName = "lastName is requires";
-    } 
-    if(!values.number) {
-      error.number = "number is requires";
-    } 
-    if(!values.email) {
-      error.email = "email is requires"; }
-    // } else if(!regex.test(values.email)){
-    //   error.email = "this is not valid email";
-    // }
-    if(!values.password) {
-      error.password = "password is requires";
-    } 
-    if(!values.confirmPassword) {
-      error.cpassword = "confirm password is requires";
-    }
+    if(!values.firstName) error.firstName = "firstName is requires";
+    if(!values.lastName) error.lastName = "lastName is requires"
+    if(!values.number) error.number = "number is requires";    
+    if(!values.email) error.email = "email is requires"; 
+    if(!values.password) error.password = "password is requires"; 
+    if(!values.confirmPassword) error.cpassword = "confirm password is requires";
     console.log(error.firstName, error.lastName, error.email, error.password)
     return error;
   }

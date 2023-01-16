@@ -265,11 +265,15 @@ function ProductPage(props) {
         if(type === "dec") setProductQuentity((prev) => ProductQuentity > 1 ? prev -1: prev)
         if(type === "inc") setProductQuentity((prev) => ProductQuentity < 100 ? prev +1: prev);
     } 
- 
+    const navigate = useNavigate();
     //add to cart   
     
     const user = useSelector(state => state.user.currentUser);   
     const handleSubClick = async () => { 
+        if(!user) {
+            return navigate("/login")
+        }
+        console.log("inside handle")
         try {
             const res = await userRequest.post(`/api/cart`,{
                 products : [
@@ -282,14 +286,15 @@ function ProductPage(props) {
                 ]
             }) 
             !res.data.productExisted && dispatch(addProduct()) 
-            dispatch(setError(res.data.message))
+            dispatch(setError(res?.data?.message))
         } catch (error) {
-            dispatch(setError(error.response.data.message))
+            console.log(error)
+            dispatch(setError(error.response?.data?.message))
         }
     }
 
 
-    const navigate = useNavigate();
+    
     const handleBuyNow = async () => {
         if(!user) {
             return navigate('/login');

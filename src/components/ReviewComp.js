@@ -5,7 +5,8 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import { publicRequest } from '../axiosReqMethods';
 import ReviewSingleComp from './ReviewSingleComp';
 import { setError } from '../redux/errorRedux';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
     padding: 30px 4vw;
@@ -68,6 +69,9 @@ const Bottom = styled.div`
 
 
 function ReviewComp({productID, productName, ratingCount, rating, setModal}) {
+    console.log({rating})
+    const user = useSelector(s => s.user.currentUser)
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const [reviews, setReviews] = useState();
     useEffect(() => {
@@ -83,13 +87,18 @@ function ReviewComp({productID, productName, ratingCount, rating, setModal}) {
       }  
       fetchReviews();
     }, [])
+
+    const handleWriteReview = () => {
+        if(!user) navigate('/login')
+        setModal(true)
+    }
     
   return (
     <Container>
         <Top>
             <TitleWAR>
                 <Title>{productName}</Title>
-                <Button onClick={() => setModal(true)} ><DriveFileRenameOutlineIcon/> Write a Review</Button>
+                <Button onClick={handleWriteReview} ><DriveFileRenameOutlineIcon/> Write a Review</Button>
             </TitleWAR>
             <RatingWrapper>
                 <RatingCount>{rating}</RatingCount><Rating value={rating} readOnly precision={0.1} /> 

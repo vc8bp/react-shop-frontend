@@ -1,10 +1,8 @@
 import './app.css'
 import React from "react";
 import CartPage from "./pages/CartPage";
-import {
-  Routes,
-  Route, Navigate, useNavigate
-} from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet} 
+from 'react-router-dom';
 import Login from "./pages/Login";
 import SingUp from "./pages/SingUp";
 import Home from "./pages/Home";
@@ -18,18 +16,25 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import MessageComponent from './components/MessageComponent';
 import ScrollToTop from './components/ScrollToTop';
 
+const IsNotLogin = () => {
+  const user = useSelector(state => state.user?.currentUser);
+  return !user ? <Outlet/> : <Navigate to={-1} /> //-1 means redirect to prev page
+}
+
 
 const App = () => {
-
-  const user = useSelector(state => state.user.currentUser);
-  return (
-    
+  const user = useSelector(state => state.user?.currentUser);
+  return (  
     <>
     <ScrollToTop/>
     <Routes>
-      <Route exact path="/"  element={<Home title="Home" />}  />
-      <Route exact path="/login"  element={ user ? <Navigate to="/"/> : <Login title="Login"/>}/>
-      <Route exact path="/signup"  element={user ? <Navigate to='/'/> : <SingUp title="Sign up"/>}/>
+      <Route element={<IsNotLogin/>}>
+        <Route exact path="/login"  element={<Login title="Login"/>}/>
+        <Route exact path="/signup"  element={<SingUp title="Sign up"/>}/>
+        <Route exact path="/forgotpassword"  element={<ForgotPassword title="ForgotPassword"/>}/>
+      </Route>
+
+      <Route exact path="/"  element={<Home title="Home" />}  />     
       <Route exact path="/Cart"  element={<CartPage title="Cart"/>}/>
       <Route exact path="/products/:category"  element={<ProductList title="Products"/>}/>
       <Route exact path="/product/:id"  element={<ProductPage title="Product"/>}/>

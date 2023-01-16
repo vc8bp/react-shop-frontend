@@ -7,14 +7,33 @@ import { mobile } from '../Responsive'
 
 
 const Container = styled.div`
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;  
+    margin-bottom: 30px;
+`
+const LoadMore = styled.button`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid teal;
+  background-color: white;
+  box-shadow: 0 5px 15px rgba(0, 128, 128, 0.1);
+  transition: all 0.3s ease-in-out;
+  :hover {
+      background-color: teal;
+      color: white;
+      box-shadow: 0 5px 15px rgba(0, 128, 128, 0.3);
+  }
+`
+const Wrapper = styled.div`
+  padding: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
     ${mobile({
       padding: "0px"
     })}
-    
 `
 
 
@@ -25,6 +44,7 @@ function Product(props) {
   const [filteredproducts, setFilteredProducts] = useState([])
 
   const [reqcancled , setReqCancle] = useState(false)
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     const axiosCancelToken = axios.CancelToken.source()
@@ -80,17 +100,21 @@ function Product(props) {
         ))
     }, [products,cat,filter])
   
-  
-   
-  
   return (
-    <Container className='container'>
+    <>
+      <Container className='container'>
+        <Wrapper>
 
-        { cat ?
-        filteredproducts.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})
-        : products.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})
-        }
-    </Container>
+          { cat ?
+          filteredproducts.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})
+          : products.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})
+          }
+          
+         </Wrapper> 
+         <LoadMore onClick={() => setPage(p => p+1)}>Load More</LoadMore>
+      </Container>
+      
+    </>
   )
 }
 
