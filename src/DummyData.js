@@ -65,9 +65,9 @@ export const Categoris = [
     },
     {
         id: 3,
-        cat: "dummy",
+        cat: "bottom",
         img: "https://png.pngtree.com/png-clipart/20190920/original/pngtree-technology-product-office-computer-png-image_4642139.jpg",
-        title: "dummy",
+        title: "bottom's",
         
     },
     

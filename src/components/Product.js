@@ -4,6 +4,11 @@ import ProductItem from './ProductItem'
 import styled from 'styled-components'
 import axios from "axios"
 import { mobile } from '../Responsive'
+import { publicRequest } from '../axiosReqMethods'
+import { setError } from '../redux/errorRedux'
+import { useDispatch } from 'react-redux'
+import ProductNotFound from './ProductNotFound'
+
 
 
 const Container = styled.div`
@@ -39,79 +44,73 @@ const Wrapper = styled.div`
 
 function Product(props) {
   const {sort, cat, filter} = props;
-
   const [products, setProducts] =useState([])
-  const [filteredproducts, setFilteredProducts] = useState([])
-
-  const [reqcancled , setReqCancle] = useState(false)
   const [page, setPage] = useState(1)
+  const {color, size} = filter || {}
+  const [prevFilters, setPrevFilters] = useState({color: null, size: null, sort: null});
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    const axiosCancelToken = axios.CancelToken.source()
+      setPrevFilters({sort, color, size});
+      setPage(1)
+  }, [sort, color, size]);
 
-    if(!reqcancled) {
-      
-      const getProducts = async () => { 
-        try {
-          const res = await axios.get(cat ? `${process.env.REACT_APP_BACKEND_API_BASE_URL}/api/products/allinfo?category=${cat}` : `${process.env.REACT_APP_BACKEND_API_BASE_URL}/api/products/allinfo` ,{cancelToken: axiosCancelToken.token}) 
-          !cat ? setProducts(res.data) : setProducts(res.data.sort((a, b) => -a.createdAt.localeCompare(b.createdAt)))
-          
-        } catch (error) {
-          if(axios.isCancel(error)) {
-            console.log("req cancled by user");
-          } else console.log(error)
+
+  useEffect(() => {
+    const axiosCancelToken = axios.CancelToken.source()   
+    let url = `/api/products/allinfo?page=${page}`
+    if (cat) url += `&category=${cat}`
+    if (color) url += `&color=${color}`
+    if (size) url += `&size=${size}`
+    if (sort) url += `&sort=${sort}`
+
+    const getProducts = async () => { 
+      try {
+        const res = await publicRequest.get( url ,{cancelToken: axiosCancelToken.token}) 
+        const filtersChanged = JSON.stringify(prevFilters) !== JSON.stringify({color, size, sort}) //checking if a filtering is changed
+        console.log({filtersChanged})
+        if (filtersChanged) { //if changd then set new product
+            setProducts(res.data);
+        } else { //else append new product with prev product
+            setProducts(p => [...p, ...res.data]);
         }
-      } 
-      getProducts();
-      
-    }
+        console.log(`total coount = ${res.data}`)
+      } catch (error) {
+        if(axios.isCancel(error)) { //req canceled by user
+          setProducts([])
+        } else {
+          dispatch(setError(error.response.data.message))
+
+        }          
+      }
+    } 
+    getProducts();
+
     return () => {
       axiosCancelToken.cancel();
-      setReqCancle(true);
     }
-  }, [cat])
+  }, [cat, page, color, size,sort])
 
-  //sort products logic
-  useEffect(() => {
-    if (sort === "Newest") {
-      setFilteredProducts((prev) =>
-        [...prev].sort((a, b) => -a.createdAt.localeCompare(b.createdAt))
-      );
-    } else if (sort === "price(L T H)") {
-      setFilteredProducts((prev) =>
-        [...prev].sort((a, b) => a.price - b.price)
-      );
-    } else {
-      setFilteredProducts((prev) =>
-        [...prev].sort((a, b) => b.price - a.price)
-      );
-    }
-  }, [sort])
+
   
   //filter products logic
     useEffect(()=> {
       filter && filter.color === "Color" && delete filter.color;
       filter && filter.size === "Size" && delete filter.size;
-      
-      
-      console.log(filter);
-        cat && setFilteredProducts(products.filter((item)=> 
-          Object.entries(filter).every(([key, value]) => item[key].includes(value))
-        ))
-    }, [products,cat,filter])
+    }, [filter])
   
   return (
     <>
       <Container className='container'>
-        <Wrapper>
-
-          { cat ?
-          filteredproducts.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})
-          : products.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})
-          }
-          
-         </Wrapper> 
-         <LoadMore onClick={() => setPage(p => p+1)}>Load More</LoadMore>
+        { !products.length ? <ProductNotFound/> 
+        :
+          <>
+            <Wrapper>
+              {products.map((Data)=> { return <ProductItem data={Data} key={Data._id} />})}       
+            </Wrapper> 
+            <LoadMore onClick={() => setPage(p => p+1)}>Load More</LoadMore>
+          </>
+        }
       </Container>
       
     </>
