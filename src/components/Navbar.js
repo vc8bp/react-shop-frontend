@@ -1,7 +1,7 @@
 import { Badge } from "@material-ui/core"
 import { Search, ShoppingCartOutlined } from '@material-ui/icons'
 //import { ShoppingCartOutlined } from "@mui/icons-material"
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import {mobile} from '../Responsive'
@@ -254,7 +254,7 @@ function Navbar() {
                             <DropdownList>
                                 <DropdownContainer>
                                     <Dropdown>Setting</Dropdown>
-                                    <Dropdown>Orders</Dropdown>
+                                    <Dropdown onClick={() => redirect("/orders")}>Orders</Dropdown>
                                     <Dropdown onClick={handleLogout}>Logout</Dropdown>
                                 </DropdownContainer>
                             </DropdownList>
@@ -263,7 +263,7 @@ function Navbar() {
                          
                         
                 <MenueItem>
-                    {user && <Badge badgeContent={cartSize} color="primary">
+                    {user && <Badge overlap="rectangular" badgeContent={cartSize} color="primary"> {/* used overlap="rectangular" bcz this error Failed prop type: Material-UI: `overlap="rectangle"` was deprecated.   */}
                         <Link style={link} to="/cart"><ShoppingCartOutlined/></Link>
                     </Badge>}
                 </MenueItem>

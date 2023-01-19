@@ -15,6 +15,7 @@ import ResetPassword from "./pages/ResetPassword";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import MessageComponent from './components/MessageComponent';
 import ScrollToTop from './components/ScrollToTop';
+import OrdersPage from './pages/OrdersPage';
 
 const IsNotLogin = () => {
   const user = useSelector(state => state.user?.currentUser);
@@ -31,9 +32,10 @@ const App = () => {
       <Route element={<IsNotLogin/>}>
         <Route exact path="/login"  element={<Login title="Login"/>}/>
         <Route exact path="/signup"  element={<SingUp title="Sign up"/>}/>
-        <Route exact path="/forgotpassword"  element={<ForgotPassword title="ForgotPassword"/>}/>
+        <Route exact path="/forgotpassword"  element={<ForgotPassword title="ForgotPassword"/>}/>       
       </Route>
 
+      <Route exact path='/orders' element={<OrdersPage/>} />
       <Route exact path="/"  element={<Home title="Home" />}  />     
       <Route exact path="/Cart"  element={<CartPage title="Cart"/>}/>
       <Route exact path="/products/:category"  element={<ProductList title="Products"/>}/>
