@@ -4,15 +4,18 @@ import styled from 'styled-components'
 
 const Container = styled.div`
     background-color: white;
-    width: 100%;
+    width: 95%;
     padding: 20px 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
+    @media screen and (max-width: 850px) {
+        padding: 20px 0px;
+    }
 `
 const Top = styled.div`
     display: flex;
     align-items: center;
-    margin: 10px 0;
+    margin: 10px 10px;
     gap: 5px;
     flex-wrap: wrap;
 `
@@ -34,17 +37,23 @@ const Product = styled.div`
     display: flex;
     align-items: center;
     height: 200px;
+    max-height: fit-content;
     margin: 10px;
+    @media screen and (max-width: 675px) {
+        flex-direction: column;
+        height: 400px;
+    }
 `
 const ProductInfo = styled.div`
     box-sizing: border-box;
-    flex: 2;
+    flex: 1;
     height: 100%;
     display: flex;
     padding: 5px;
     gap: 10px;
 `
 const Image = styled.img`
+    max-width: 200px;
     flex: 1;
     border-radius: 5px;
 `
@@ -60,25 +69,50 @@ const ProductTitle = styled.h3``
 const PmicroInfo = styled.div`
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
+    @media screen and (max-width: 850px) {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
 `
 const Qty = styled.div`
+    border-right: solid 1px teal;
+    padding-right: 5px;
+    @media screen and (max-width: 850px) { //magic nubers
+        border-right: none;
+        padding-right: 0;
+    }
 `
 const Size = styled.div`
+    border-right: solid 1px teal;
+    padding-right: 5px;
+    @media screen and (max-width: 850px) { //magic nubers
+        border-right: none;
+        padding-right: 0;
+    }
+
 `
 const Price = styled.div`
     font-weight: 600;
     font-size: 20px;
 `
+const StatusWrapper = styled.div`
+    flex: 1;
+    display: flex;
+    @media screen and (max-width: 675px) { //magic nubers
+        flex: 2;
+        width: 100%;
+    }
+`
 
 const Statuss = styled.div`
     flex: 1;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    text-align: left;
+
 `
 const StatusKey = styled.span`
 
@@ -98,58 +132,43 @@ const DeliveryValue = styled.span`
 
 
 
-function SingleOrderSection() {
+function SingleOrderSection({order}) {
   return (
     <Container>
         <Top>
-            <OrderID>Order #43534534875</OrderID>
-            <OrderPlacedTime>Order placed: 7th jan 2002</OrderPlacedTime>
+            <OrderID>Order ID : {order.paymentInfo.razorpay_payment_id}</OrderID>
+            <OrderPlacedTime>Order placed : {new Date(order.createdAt).toDateString()}</OrderPlacedTime>
         </Top>
         <hr/>
         <Bottom>
-            <Product>
+            {order.products.map(pro => {
+                return <React.Fragment key={pro._id}>
+                <Product>
                 <ProductInfo>
-                    <Image src='https://5.imimg.com/data5/IB/YL/MY-552852/men-slim-fit-shirt-500x500.jpg'/>
+                    <Image src={pro.img}/>
                     <PInfo>
-                        <ProductTitle>Men's Slim Fit T-Shirt</ProductTitle>
+                        <ProductTitle>{pro.title}</ProductTitle>
                         <PmicroInfo>
-                            <Size>Size: S</Size>
-                            <Qty>Qty: 3</Qty>    
-                            <Price>Rs. 1500</Price>
+                            <Size>Size: {pro.size}</Size>
+                            <Qty>Qty: {pro.quantity}</Qty>    
+                            <Price>Rs. {pro.price}</Price>
                         </PmicroInfo>
                     </PInfo>
                 </ProductInfo>
-                <Statuss>
-                    <StatusKey>Status</StatusKey>
-                    <Statusvalue>in-Transit</Statusvalue>
-                </Statuss>
-                <Statuss>
-                    <DeliveryKey>Delevery expected by:</DeliveryKey>
-                    <DeliveryValue>21 nov 2022</DeliveryValue>
-                </Statuss>
+                <StatusWrapper>
+                    <Statuss>
+                        <StatusKey>Status</StatusKey>
+                        <Statusvalue>{order.orderStatus}</Statusvalue>
+                    </Statuss>
+                    <Statuss>
+                        <DeliveryKey>Delevery expected by:</DeliveryKey>
+                        <DeliveryValue>{new Date(order.ExpectedDelevery).toDateString()}</DeliveryValue>
+                    </Statuss>
+                </StatusWrapper>
             </Product>
-            <hr/>
-            <Product>
-                <ProductInfo>
-                    <Image src='https://5.imimg.com/data5/IB/YL/MY-552852/men-slim-fit-shirt-500x500.jpg'/>
-                    <PInfo>
-                        <ProductTitle>Men's Slim Fit T-Shirt</ProductTitle>
-                        <PmicroInfo>
-                            <Size>Size: S</Size>
-                            <Qty>Qty: 3</Qty>    
-                            <Price>Rs. 1500</Price>
-                        </PmicroInfo>
-                    </PInfo>
-                </ProductInfo>
-                <Statuss>
-                    <StatusKey>Status</StatusKey>
-                    <Statusvalue>in-Transit</Statusvalue>
-                </Statuss>
-                <Statuss>
-                    <DeliveryKey>Delevery expected by:</DeliveryKey>
-                    <DeliveryValue>21 nov 2022</DeliveryValue>
-                </Statuss>
-            </Product>
+            <hr/>             
+            </React.Fragment>
+            })}
         </Bottom>
     </Container>
   )

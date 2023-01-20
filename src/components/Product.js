@@ -67,20 +67,17 @@ function Product(props) {
     const getProducts = async () => { 
       try {
         const res = await publicRequest.get( url ,{cancelToken: axiosCancelToken.token}) 
-        const filtersChanged = JSON.stringify(prevFilters) !== JSON.stringify({color, size, sort}) //checking if a filtering is changed
-        console.log({filtersChanged})
+        const filtersChanged = JSON.stringify(prevFilters) !== JSON.stringify({sort, color, size}) //checking if a filtering is changed
         if (filtersChanged) { //if changd then set new product
             setProducts(res.data);
         } else { //else append new product with prev product
             setProducts(p => [...p, ...res.data]);
         }
-        console.log(`total coount = ${res.data}`)
       } catch (error) {
         if(axios.isCancel(error)) { //req canceled by user
           setProducts([])
         } else {
           dispatch(setError(error.response.data.message))
-
         }          
       }
     } 

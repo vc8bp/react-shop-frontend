@@ -24,7 +24,7 @@ const IsNotLogin = () => {
 
 
 const App = () => {
-  const user = useSelector(state => state.user?.currentUser);
+  
   return (  
     <>
     <ScrollToTop/>

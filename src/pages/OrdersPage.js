@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Announcments from '../components/Announcments'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
 import NewsLetter from '../components/NewsLetter'
 import styled from 'styled-components'
 import SingleOrderSection from '../components/SingleOrderSection'
+import { userRequest } from '../axiosReqMethods'
+import { useSelector } from 'react-redux'
+
 
 const Container = styled.div`
     width: 100%;
@@ -17,7 +20,7 @@ const TopSection = styled.div`
 
 `
 const Title = styled.h1`
-
+    margin-left: 10px;
 `
 const Desc = styled.span`
 
@@ -32,7 +35,24 @@ const BottomSection = styled.div`
 `
 
 
+
 function OrdersPage() {
+    const user = useSelector(state => state.user?.currentUser);
+    const [orders, setOrders] = useState([])
+
+    useEffect(() => {
+      const fetchOrders = async () => {
+        try {
+            const {data} = await userRequest.get(`/api/orders/find/${user._id}`)
+            setOrders(data)
+            console.log(data)
+        } catch (error) {
+            setOrders([])
+        }
+      }
+      fetchOrders()
+    }, [])
+    
   return (
     <>
         <Announcments/>
@@ -43,8 +63,10 @@ function OrdersPage() {
                     <Title>Your Orders</Title>
                 </TopSection>
                 <BottomSection>
-                    <SingleOrderSection/>
-                    <SingleOrderSection/>
+                    {orders?.map(i => {
+                        return <SingleOrderSection key={orders._id} order={i}  />
+                    })}
+                    
                 </BottomSection>
             </div>
         </Container>
