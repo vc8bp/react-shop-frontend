@@ -64,7 +64,7 @@ function OrdersPage() {
                 </TopSection>
                 <BottomSection>
                     {orders?.map(i => {
-                        return <SingleOrderSection key={orders._id} order={i}  />
+                        return <SingleOrderSection key={i._id} order={i}  />
                     })}
                     
                 </BottomSection>

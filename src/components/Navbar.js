@@ -2,7 +2,7 @@ import { Badge } from "@material-ui/core"
 import { Search, ShoppingCartOutlined } from '@material-ui/icons'
 //import { ShoppingCartOutlined } from "@mui/icons-material"
 import { Link, useNavigate } from "react-router-dom";
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import styled from 'styled-components'
 import {mobile} from '../Responsive'
 import { useSelector } from "react-redux";
@@ -10,7 +10,11 @@ import { useDispatch} from 'react-redux'
 import { logoutUser } from '../redux/userRedux'
 import { publicRequest, userRequest } from "../axiosReqMethods";
 import { setProduct } from "../redux/cartRedux";
-
+import LocalMallIcon from '@mui/icons-material/LocalMall';
+import SettingsIcon from '@mui/icons-material/Settings';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 
 const link = {
@@ -131,33 +135,53 @@ const Right = styled.div`
 `
 
 const DropdownList = styled.div`
-    display: none;
-  //  position: relative;
-    
+    display: ${p => p.open ? "block" : "none"};
 `
 const DropdownContainer = styled.div`
-    background-color: #baabab;
+    background-color: #f5f5f5;
+    box-shadow: rgba(0, 0, 0, 0.10) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+   // border: 1px solid black;
     display: flex;
     flex-direction: column;
-    position: absolute;
-    background-color: white;
+    position: absolute;   
+    top: 110%;
+    transform: translate(-35%);
+    width: 150px;
+    ::before {
+        content: "";
+        position: absolute;
+        left : 50%;
+        top: -6px;
+        width: 10px;
+        height: 10px;
+        background-color: #f5f5f5;
+        transform: rotate(45deg);
+    }
 `
 const Dropdown = styled.span`
+    z-index: 2;
     padding: 10px 20px;
     background-color: inherit;
     color: black;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
     &:hover {
-        background-color: #e3dbdb;
         color: black;
+        font-weight: 600;
     }
 `
 const AccountContainer = styled.div`
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    &:hover ${DropdownList}{
+    height: 100%;
+    user-select: none;
+    /* &:hover ${DropdownList}{
         display: block;
-    }
+    } */
+
 `
 const Hello = styled.span`
     font-size: 15px;
@@ -166,6 +190,8 @@ const Hello = styled.span`
 const Account = styled.span`
     font-weight: 600;
     position: relative;
+    display: flex;
+    align-items: center;
 `
 
 
@@ -226,6 +252,10 @@ function Navbar() {
     const handleClick = (id) => {
         redirect(`/product/${id}`)      
     }  
+
+
+    //options
+    const [optionIsOpen, setOptionIsOpen] = useState(false);
     
   return (
     <Container>
@@ -248,14 +278,14 @@ function Navbar() {
                 {!user ? <><MenueItem><Link style={link} to="/signup">Sing Up</Link></MenueItem>
                         <MenueItem><Link style={link} to="/login">Log In</Link></MenueItem></> 
                         :
-                        <AccountContainer>
+                        <AccountContainer onClick={() => setOptionIsOpen(!optionIsOpen)} >
                         <Hello>hello, {user.firstName}</Hello>
-                        <Account>Account</Account>
-                            <DropdownList>
-                                <DropdownContainer>
-                                    <Dropdown>Setting</Dropdown>
-                                    <Dropdown onClick={() => redirect("/orders")}>Orders</Dropdown>
-                                    <Dropdown onClick={handleLogout}>Logout</Dropdown>
+                        <Account>Account {optionIsOpen ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}</Account>
+                            <DropdownList open={optionIsOpen}>
+                                <DropdownContainer onClick={(e) => e.stopPropagation()}>
+                                    <Dropdown><SettingsIcon/> Setting</Dropdown>
+                                    <Dropdown onClick={() => redirect("/orders")}><LocalMallIcon/> Orders</Dropdown>
+                                    <Dropdown onClick={handleLogout}><LogoutIcon/> Logout</Dropdown>
                                 </DropdownContainer>
                             </DropdownList>
                         </AccountContainer>
