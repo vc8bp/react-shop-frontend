@@ -14,6 +14,8 @@ import addDynamicScript from '../helpers/addDynamicScript'
 import { setError } from '../redux/errorRedux'
 import EmptyCartComponent from '../components/EmptyCartComponent'
 import Loading from '../components/Loading'
+import { setAddress } from '../redux/userRedux'
+import GetUserAddress from '../components/GetUserAddress'
 
 
 
@@ -342,12 +344,31 @@ function CartPage(props) {
         }
     }
 
+    //get use address modal
+    const [addmodalisOpen, setaddmodalIsOpen] = useState(false)
+
     const [isCheckoutLoading, setischeckoutLoading] = useState(false);
+    const userAddress = useSelector(state => state.user.address)   
     const handleCheckout = async () => {
 
         if(!user) {
             return navigate('/login');
         } 
+
+        // if there is address then continue or set get address popup
+        console.log({userAddress})
+        if(!userAddress){  //if address is not stored in users local storage then get from db
+            try {
+                const {data} = await userRequest.get("/api/user/address")
+                console.log(data)
+                if(!data.ok){
+                    return setaddmodalIsOpen(true);
+                }
+                dispatch(setAddress(data.address))  //setting address wh to redux       
+            } catch (error) {
+                return setaddmodalIsOpen(true)
+            }
+        }
 
         setischeckoutLoading(true) 
         if(!window.Razorpay) {
@@ -356,7 +377,8 @@ function CartPage(props) {
 
         const {data:{order}} = await userRequest.post("api/buy/checkout",{
             user:user._id,
-            type: "cart"
+            type: "cart",
+            address: userAddress
         });
 
         const {data:{key}} = await userRequest.get("api/buy/getkey");
@@ -464,6 +486,7 @@ function CartPage(props) {
             </Bottom>
             </>
             : <EmptyCartComponent/>)}
+            <GetUserAddress setModal={setaddmodalIsOpen} isOpen={addmodalisOpen} />
         </Wrapper>
         <NewsLetter/>
         <Footer/>

@@ -18,6 +18,8 @@ import axios from 'axios'
 import ReviewComp from '../components/ReviewComp'
 import WriteaReview from '../components/WriteaReview'
 import { setError } from '../redux/errorRedux'
+import GetUserAddress from '../components/GetUserAddress'
+import { setAddress } from '../redux/userRedux'
 
 
 
@@ -227,7 +229,12 @@ function ProductPage(props) {
     //setting defalut size and color for product
     const [Color, setColor] = useState((product?.color?.length >= 0 && `#${product.color[0]}`) || "#000000");
     const [size, setsize] = useState((product?.size?.length >= 0 && product.size[0]) || "XL");
+
+    //reviews mdodal
     const [modalisOpen, setmodalIsOpen] = useState(false)
+
+    //get use address modal
+    const [addmodalisOpen, setaddmodalIsOpen] = useState(false)
     
     //to change title as soon as component mounts
     useEffect(() => {
@@ -269,6 +276,7 @@ function ProductPage(props) {
     //add to cart   
     
     const user = useSelector(state => state.user.currentUser);   
+
     const handleSubClick = async () => { 
         if(!user) {
             return navigate("/login")
@@ -294,11 +302,28 @@ function ProductPage(props) {
     }
 
 
-    
+    const userAddress = useSelector(state => state.user.address)   
+
     const handleBuyNow = async () => {
         if(!user) {
             return navigate('/login');
         } 
+
+        // if there is address then continue or set get address popup
+        console.log({userAddress})
+        if(!userAddress){  //if address is not stored in users local storage then get from db
+            try {
+                const {data} = await userRequest.get("/api/user/address")
+                console.log(data)
+                if(!data.ok){
+                    return setaddmodalIsOpen(true);
+                }
+                dispatch(setAddress(data.address))  //setting address wh to redux       
+            } catch (error) {
+                return setaddmodalIsOpen(true)
+            }
+        }
+        
         if(!window.Razorpay) {
             await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js") //script is not loading at first time dk why so i added this XD
         } 
@@ -312,7 +337,8 @@ function ProductPage(props) {
                 size, 
                 color:Color,
             },
-            type: "product"
+            type: "product",
+            address: userAddress
         });
 
         const {data:{key}} = await userRequest.get("api/buy/getkey");
@@ -336,7 +362,7 @@ function ProductPage(props) {
                 contact: user.number
             },
             notes: {
-                address: "Razorpay Corporate Office"
+                address: "Dummy Office address"
             },
             theme: {
                 color: "#40a0a0"
@@ -346,7 +372,7 @@ function ProductPage(props) {
         rzp1.open();       
     }
 
-
+ 
     // IMAGE Lence In Out Effect
     const img = useRef(null)
     const handleImgMouseEnter = (e) =>{
@@ -415,6 +441,7 @@ function ProductPage(props) {
   
         </Wrapper> 
         <WriteaReview product={product} setModal={setmodalIsOpen} isOpen={modalisOpen} />
+        <GetUserAddress setModal={setaddmodalIsOpen} isOpen={addmodalisOpen} />
         <ReviewComp productID={product._id} productName={product.title} rating={product.ratingsAverage} ratingCount={product.ratingsQuantity} setModal={setmodalIsOpen}/>
         </>
         }

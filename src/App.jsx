@@ -16,6 +16,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import MessageComponent from './components/MessageComponent';
 import ScrollToTop from './components/ScrollToTop';
 import OrdersPage from './pages/OrdersPage';
+import GetUserAddress from './components/GetUserAddress';
 
 const IsNotLogin = () => { //users can only access this routes if they are not logedin
   const user = useSelector(state => state.user?.currentUser);
@@ -51,7 +52,7 @@ const App = () => {
       <Route exact path="/"  element={<Home title="Home" />}  />     
       <Route exact path="/products/:category"  element={<ProductList title="Products"/>}/>
       <Route exact path="/product/:id"  element={<ProductPage title="Product"/>}/>
-      
+      <Route exact path="/address" element={<GetUserAddress/>} />
     </Routes>
     <MessageComponent/>
     <BackToTopBTN/>  

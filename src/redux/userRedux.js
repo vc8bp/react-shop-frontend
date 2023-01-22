@@ -4,6 +4,7 @@ const userSlice = createSlice({
     name: "user",
     initialState: {
         currentUser: null ,
+        address: null,
         isFetching: false,
         isError: false,
         error: null
@@ -17,10 +18,14 @@ const userSlice = createSlice({
         },
         logoutUser: (state) => {
             state.currentUser = null;
+            state.address = null;
         },
         resetError: (state) => {
             state.error = null;
             state.isError = null;
+        },
+        setAddress: (state, action) => {
+            state.address = action.payload;
         },
         
 
@@ -61,5 +66,5 @@ const userSlice = createSlice({
     }
 })
 
-export const { Start, loginSucces, Failed, logoutUser, signUpSucces, signupFailed, resetError } = userSlice.actions;
+export const { Start, loginSucces, Failed, logoutUser, signUpSucces, signupFailed, resetError, setAddress } = userSlice.actions;
 export default userSlice.reducer;
