@@ -89,7 +89,7 @@ const GetUserAddress = ({isOpen, setModal}) => {
           dispatch(setError("Address successfully updated"))
         }
     } catch (error) {
-        console.log('failed to add  address')
+      dispatch(setError(error.response.data.message))
     }
     setModal(false)
     console.log(address);

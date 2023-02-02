@@ -106,7 +106,12 @@ const Description = styled.p`
     `
 const Price = styled.p`
     font-size: 30px;
+    margin: 10px 0px;
  `
+const Stock = styled.span`
+    font-size: 1.5rem;
+    color: ${p => p.inStock ? "green" : "red" };
+`
 
 
 //FILTERS
@@ -134,8 +139,9 @@ const FilterTitle = styled.div`
 const FilterColor = styled.div`
     width: 20px;
     height: 20px;
-    background-color: #${props=> props.color};
+    background-color: ${props=> props.color};
     border-radius: 50%;
+    box-sizing: border-box;
     cursor: pointer;
     margin-left: 5px;
     &:active{
@@ -213,6 +219,11 @@ const Button = styled.button`
     @media only screen and (max-width: 1330px) {
         margin: 5px 10px;
     }
+    &:disabled {
+        background-color: #ebebeb;
+        cursor: not-allowed;
+    }
+    
 `
 
 
@@ -328,25 +339,27 @@ function ProductPage(props) {
             await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js") //script is not loading at first time dk why so i added this XD
         } 
 
+        let order, key
+        try {
+            const {data:{DBorder}} = await userRequest.post("api/buy/checkout",{
+                user:user._id,
+                product: {
+                    productID: product._id,
+                    quantity:ProductQuentity,
+                    size, 
+                    color:Color,
+                },
+                type: "product",
+                address: userAddress
+            });
+            const {data:{DBkey}} = await userRequest.get("api/buy/getkey");
 
-        const {data:{order}} = await userRequest.post("api/buy/checkout",{
-            user:user._id,
-            product: {
-                productID: product._id,
-                quantity:ProductQuentity,
-                size, 
-                color:Color,
-            },
-            type: "product",
-            address: userAddress
-        });
-
-        const {data:{key}} = await userRequest.get("api/buy/getkey");
-
-        if(!order || !key){
-            return dispatch(setError("error accured while creating order"))
+            order = DBorder;
+            key = DBkey;
+        } catch (error) {
+            dispatch(setError(error.response.data.message || "error accured while creating order"))
         }
-          
+  
         const options = {
             key: key, //reciving key from backend sue to security 
             amount: order.ammount, 
@@ -406,6 +419,7 @@ function ProductPage(props) {
                 <Description>{!product.desc ? `Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora sint accusamus explicabo in natus dolor maiores voluptate labore adipisci!lorem20Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro dicta, commodi pariatur nisi fugiat hic quia voluptas! Quidem, earum voluptas.`: product.desc}
                 </Description>
                 <Price>₹{product.price}</Price>
+                {product.quantity <= 5 && <Stock inStock={product.quantity >= 1}>{product.quantity >= 1 ? `Only ${product.quantity} left in stock` : "Currently unavailable"}</Stock>}
                 <FilterContainer>
                     <Filter>
                         <FilterTitle>Color</FilterTitle>
@@ -433,8 +447,8 @@ function ProductPage(props) {
                           </ValueARButton>                          
                         </ValueContainer>
                         <PurchaeContainer>
-                          <Button onClick={handleSubClick}>Add To Cart</Button>
-                          <Button onClick={handleBuyNow}>Buy Now</Button>
+                          <Button onClick={handleSubClick} disabled={product.quantity < 1}>Add To Cart</Button>
+                          <Button onClick={handleBuyNow} disabled={product.quantity < 1}>Buy Now</Button>
                         </PurchaeContainer>
                       </CartContainer>
             </InfoContainer>

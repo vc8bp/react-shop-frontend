@@ -18,7 +18,6 @@ const Container = styled.div`
 `
 
 function ModalComp({children, isOpen, }) { 
-  console.log(isOpen)
   return (
     <Container isOpen={isOpen}>
         {children}
