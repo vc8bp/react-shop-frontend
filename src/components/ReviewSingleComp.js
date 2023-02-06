@@ -54,6 +54,11 @@ const Helpful = styled.div`
 `
 const Report = styled.div`
     color: red;
+    cursor: pointer;
+
+    :hover {
+        text-decoration: underline;
+    }
 `
 
 
@@ -62,6 +67,16 @@ function ReviewSingleComp({review}) {
     const handleUpVote = async () => {
         try {
             const {data} = await userRequest.put(`/api/review/upvote/${review._id}`)
+            dispatch(setError(data.message))
+        } catch (error) {
+            console.log(error)
+            dispatch(setError(error.response.data.message))
+        }
+    }   
+
+    const handleReport = async () => {
+        try {
+            const {data} = await userRequest.put(`/api/review/abuse/${review._id}`)
             dispatch(setError(data.message))
         } catch (error) {
             console.log(error)
@@ -87,7 +102,7 @@ function ReviewSingleComp({review}) {
                 <Helpful onClick={handleUpVote}>
                     <ThumbUpOffAltIcon style={{fontSize: "30px"}}/>   Helpful?
                 </Helpful>
-                <Report>Report as inappropriate</Report>
+                <Report onClick={handleReport} >Report as inappropriate</Report>
             </Feedback>
         </Right>  
     </Container>

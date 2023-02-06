@@ -69,23 +69,20 @@ const Bottom = styled.div`
 
 
 function ReviewComp({productID, productName, ratingCount, rating, setModal}) {
-    console.log({rating})
     const user = useSelector(s => s.user.currentUser)
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const [reviews, setReviews] = useState();
     useEffect(() => {
-      const fetchReviews = async () => {
+      (async () => {
         try {
             const {data} = await publicRequest.get(`/api/review/${productID}`)  
             setReviews(data)
-            console.log(data)
         } catch (error) {
             console.log(error)
             dispatch(setError(error.response.data.message))
         }
-      }  
-      fetchReviews();
+      })()
     }, [])
 
     const handleWriteReview = () => {
