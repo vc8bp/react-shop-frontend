@@ -378,7 +378,11 @@ function CartPage(props) {
         const {data:{order}} = await userRequest.post("api/buy/checkout",{
             user:user._id,
             type: "cart",
-            address: userAddress
+            userInfo: {
+                address: userAddress,
+                name: `${user.firstName} ${user.lastName}`,
+                email: user.email,
+            }
         });
 
         const {data:{key}} = await userRequest.get("api/buy/getkey");

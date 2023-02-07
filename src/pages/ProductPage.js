@@ -347,7 +347,12 @@ function ProductPage(props) {
                     color:Color,
                 },
                 type: "product",
-                address: userAddress
+                userInfo: {
+                    address: userAddress,
+                    name: `${user.firstName} ${user.lastName}`,
+                    email: user.email,
+                    number: user.number
+                }
             });
             Dborder = order;
 
