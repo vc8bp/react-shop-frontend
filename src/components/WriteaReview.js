@@ -81,7 +81,6 @@ function WriteaReview({product, isOpen, setModal}) {
     const [rating, setRating] = useState(0)
 
     const handleSubmit = async () => {
-        console.log("me runed")
         try {           
             const {data} = await userRequest.post(`/api/review/${product._id}`,{rating, review})
             dispatch(setError(data.message))

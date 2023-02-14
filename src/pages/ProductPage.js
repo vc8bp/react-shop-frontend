@@ -238,8 +238,8 @@ function ProductPage(props) {
     const [isLoading, setIsLoading] = useState(true)
     //const [error, setError] = useState(null)
     //setting defalut size and color for product
-    const [Color, setColor] = useState((product?.color?.length >= 0 && `#${product.color[0]}`) || "#000000");
-    const [size, setsize] = useState((product?.size?.length >= 0 && product.size[0]) || "XL");
+    const [Color, setColor] = useState((product?.color?.length >= 0 && `#${product.color[0]}`));
+    const [size, setsize] = useState((product?.size?.length >= 0 && product.size[0]));
 
     //reviews mdodal
     const [modalisOpen, setmodalIsOpen] = useState(false)
@@ -281,7 +281,7 @@ function ProductPage(props) {
    
     const HandlClick = (type) => {   
         if(type === "dec") setProductQuentity((prev) => ProductQuentity > 1 ? prev -1: prev)
-        if(type === "inc") setProductQuentity((prev) => ProductQuentity < 100 ? prev +1: prev);
+        if(type === "inc") setProductQuentity((prev) => ProductQuentity < product.quantity ? prev +1: prev);
     } 
     const navigate = useNavigate();
     //add to cart   
@@ -296,7 +296,7 @@ function ProductPage(props) {
             const res = await userRequest.post(`/api/cart`,{
                 products : [
                     {
-                        productID: product.productno,
+                        productID: product._id,
                         quantity: ProductQuentity,
                         color: Color || product.color[0],
                         size : size || product.size[0]
@@ -336,7 +336,7 @@ function ProductPage(props) {
             await addDynamicScript("https://checkout.razorpay.com/v1/checkout.js") //script is not loading at first time dk why so i added this XD
         } 
 
-        let Dborder, Dbkey, DBorder
+        let Dborder, Dbkey;
         try {
             const {data:{order}} = await userRequest.post("api/buy/checkout",{
                 user:user._id,

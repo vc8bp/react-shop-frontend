@@ -145,7 +145,7 @@ const ProductColor = styled.div`
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: #${props => props.color};
+    background-color: ${props => props.color};
 `
 const ProductSize = styled.span``
 const PriceDeteail =styled.div`    
@@ -313,8 +313,7 @@ function CartPage(props) {
     }, [cartProductRes?.products, cartProductRes?.products?.map(p => p.quantity)])//map is used bcz we need to reRender this component if any products quantity changes so we maped true every product quantity
      
     //delete product
-    const handleDeleteProduct = async (e, id) => {
-        e.preventDefault();
+    const handleDeleteProduct = async (id) => {
         try{
             const filteredProducts = cartProductRes?.products?.filter(p => {
                 return id !== p.productID
@@ -330,7 +329,9 @@ function CartPage(props) {
     }
 
     //handle dec inc in product Quantity
-    const handleProductQuantityChange = async (productID, quantity, incORdec) => {
+    const handleProductQuantityChange = async (productID, quantity) => {
+
+        if(quantity === 0 ) return handleDeleteProduct(productID)
         try {
             const res = await userRequest.put(`/api/cart/updatequantity/${productID}/${quantity}`)
             const productIndex = cartProductRes.products.findIndex(p => p.productID === productID)
@@ -441,7 +442,7 @@ function CartPage(props) {
                 <Info>    
                     {cartProductRes?.products?.map((product) => (
                         <Product key={product.productID}>
-                            <DelButton onClick={(e) => handleDeleteProduct(e,product.productID)}>
+                            <DelButton onClick={() => handleDeleteProduct(product.productID)}>
                                 <ClearOutlined style={{fontSize: "40px" , color: "#AB2A28"}}/>
                             </DelButton>
                             <ProductDeteail onClick={() => navigate(`/product/${product._id}`)}>

@@ -23,13 +23,13 @@ const Desc = styled.span`
   text-align: center;
 `
 
-function ProductNotFound() {
+function ProductNotFound({title, desc}) {
     const imageURl = "https://media.discordapp.net/attachments/912996760589316120/1065268393818730626/55331383676.png?width=1023&height=683"
   return (
     <Container>
         <Image src={imageURl} />
-        <Title>Opps! No product Found</Title>
-        <Desc>Your filter did not match any product</Desc>
+        <Title>{title}</Title>
+        <Desc>{desc}</Desc>
         <Desc>Please try again</Desc>
     </Container>
   )

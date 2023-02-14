@@ -109,26 +109,42 @@ const StatusWrapper = styled.div`
 const Statuss = styled.div`
     flex: 1;
     display: flex;
+    gap: 0.3rem;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
 `
 const StatusKey = styled.span`
 
-`
-const Statusvalue = styled.span`
-    font-size: 25px;
-    font-weight: 600;
-    color: teal;
 `
 const DeliveryKey = styled.span`
 `
 const DeliveryValue = styled.span`
     font-size: 25px;
     font-weight: 600;
+    @media screen and (max-width: 675px) { //magic nubers
+        font-size: 1rem;
+    }
 `
 
+//status//
+const statusColors = {
+    pending: { background: "FDF6B2", color: "C6783B" },
+    processing: { background: "DEF7EC", color: "87A66E" },
+    delivered: { background: "E1EFFE", color: "3F91FA" }
+};  
+const Status = styled.p`
+    font-weight: 500;
+    margin: 0;
+    padding: 0.3rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 50px;
+    background-color: #${({ status }) => statusColors[status]?.background};
+    color: #${({ status }) => statusColors[status]?.color};
+`;
+//status END//
 
 
 
@@ -158,7 +174,7 @@ function SingleOrderSection({order}) {
                 <StatusWrapper>
                     <Statuss>
                         <StatusKey>Status</StatusKey>
-                        <Statusvalue>{order.orderStatus}</Statusvalue>
+                        <Status status={order.orderStatus}>{order.orderStatus}</Status>
                     </Statuss>
                     <Statuss>
                         <DeliveryKey>Delevery expected by:</DeliveryKey>

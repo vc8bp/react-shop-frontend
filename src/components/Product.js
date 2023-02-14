@@ -99,7 +99,7 @@ function Product(props) {
   return (
     <>
       <Container className='container'>
-        { !products.length ? <ProductNotFound/> 
+        { !products.length ? <ProductNotFound title="Opps! No product Found" desc="Your filter did not match any product"/> 
         :
           <>
             <Wrapper>
