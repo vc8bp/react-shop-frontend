@@ -24,7 +24,7 @@ const IsNotLogin = () => { //users can only access this routes if they are not l
 }
 const IsLogin = () => { //only Loged in users can access this
   const user = useSelector(state => state.user?.currentUser);
-  return user ? <Outlet/> : <Navigate to={-1} /> //-1 means redirect to prev page
+  return user ? <Outlet/> : <Navigate to={"/login"} /> //-1 means redirect to prev page
 }
 
 

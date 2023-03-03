@@ -152,17 +152,13 @@ const ResetPassword = () => {
         }
         
         try {   
-            const res = await publicRequest.post(`/api/auth/resetpassword/${id}`, {password})
-            //data.status === 200 && setpassChanged(true)
-            //setpassChanged(true)
-            //checking if req was success
-            const {status, data} = res;
-            console.log(data);
-            status === 200 && setmessage(data.data);
+            const {data} = await publicRequest.post(`/api/auth/resetpassword/${id}`, {password})
+            setmessage(data.data);
             setpassChanged(true);
         
         } catch (error) {
-            setmessage(error?.response?.data?.error)
+            console.log(error)
+            dispatch(setError(error?.response?.data?.error))
             setpassChanged(false)
         } 
     }

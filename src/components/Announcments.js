@@ -58,7 +58,7 @@ function Announcments() {
     <>
       {announcment && <Container>
         <Text>
-          {announcment.Title}
+          {announcment.title}
         </Text>
       </Container>}
     </>
