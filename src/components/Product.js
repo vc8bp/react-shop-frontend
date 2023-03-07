@@ -32,12 +32,14 @@ const LoadMore = styled.button`
   }
 `
 const Wrapper = styled.div`
-  padding: 20px;
+    padding: 20px;
     display: flex;
+    gap: 0.5rem;
     flex-wrap: wrap;
     justify-content: space-evenly;
     ${mobile({
-      padding: "0px"
+      padding: "0px",
+      gap: "0"
     })}
 `
 

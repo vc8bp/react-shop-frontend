@@ -48,7 +48,10 @@ const Options = styled.option`
 function ProductList(props) {
 
     const location = useLocation();
-    const cat = location.pathname.split("/")[2];
+    let cat = location.pathname.split("/")[2];
+
+    if(cat === "all") cat = null;
+
 
     //filters logic
     const [filter, setFilter] = useState({});
@@ -72,7 +75,7 @@ function ProductList(props) {
     <Container>
         <Announcments/>
         <Navbar/>
-        <Title>{cat}</Title>
+        <Title>{cat || "All Products"}</Title>
         <FilterContainer>
             <Filter>
                 <FilterText>Filter Products:</FilterText>
@@ -99,8 +102,12 @@ function ProductList(props) {
                 <FilterText>Sort Products:</FilterText>
                 <Select onChange={e => setSort(e.target.value)}>
                     <Options defaultValue>Newest</Options>
+                    <Options value="topRated">Top rated</Options>
+                    <Options value="toppurchased">Most Purchased</Options>
+                    <Options value="topreviewed">Most reviewed</Options>
                     <Options value="price-desc">price(H T L)</Options>
                     <Options value="price-asc">Price(L T H)</Options>
+
                     
                 </Select>
             </Filter>

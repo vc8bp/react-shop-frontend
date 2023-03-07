@@ -31,8 +31,8 @@ const Home = (props) => {
       <Slider/>
       <Category />
       <div className='container'>
-        <Title>Products</Title><br/>
-        <Product />
+        <Title>Top Products</Title><br/>
+        <Product sort="toppurchased"/>
       </div> 
       <NewsLetter/>
       <Footer/>

@@ -14,35 +14,6 @@ const Container = styled.div`
     overflow: hidden;
     
 `
-const slide = keyframes`
-
-  0% {
-    transform: translateX(100vw);
-    @media (min-width: 700px) {
-      transform: translateX(-100%);
-    } 
-  }
-
-  100% {
-    transform: translateX(-100vw); //tryed some random min max stuff and it worked!!
-    /* transform: translateX(-200%); */
-    
-    /* @media (max-width: 700px) {
-      transform: translateX(-100%);
-    } */
-  }
-
-  
-`
-const Text = styled.p`
-  position: absolute;
-  font-size: clamp(0.8rem, 2.5vw, 1.4rem); 
-  width: max-content;
-  
-  animation: 10s linear 0s infinite ${slide};
-  
-`
-
 
 
 function Announcments() {
@@ -57,9 +28,9 @@ function Announcments() {
   
     <>
       {announcment && <Container>
-        <Text>
+        <marquee direction="left" scrollamount="15">
           {announcment.title}
-        </Text>
+        </marquee>
       </Container>}
     </>
     

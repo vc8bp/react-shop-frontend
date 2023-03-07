@@ -292,7 +292,7 @@ function Navbar() {
                         }
                          
                         
-                <MenueItem>
+                <MenueItem title='Cart'>
                     {user && <Badge overlap="rectangular" badgeContent={cartSize} color="primary"> {/* used overlap="rectangular" bcz this error Failed prop type: Material-UI: `overlap="rectangle"` was deprecated.   */}
                         <Link style={link} to="/cart"><ShoppingCartOutlined/></Link>
                     </Badge>}

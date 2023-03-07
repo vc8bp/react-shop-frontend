@@ -1,6 +1,4 @@
-import { ArrowBackOutlined, ArrowForwardOutlined } from '@mui/icons-material'
-import React from 'react'
-import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { hero } from '../DummyData'
 import {mobile} from '../Responsive'
@@ -18,11 +16,18 @@ const Container = styled.div`
     })}  */
     
 `
+const ImageWrapper = styled.div`
+    width: 100%;    
+    max-height: 65vh;
+    max-height: 65dvh;
+    overflow: hidden;
+`
 
 const Image = styled.img`
     width: 100%;
     object-fit: cover;
     margin-bottom: 20px;
+    object-position: center;
 `
 
 const Info = styled.div`
@@ -62,6 +67,7 @@ const Button = styled.button`
 `
 
 function Slider() {
+    const navigate = useNavigate();
     const index = Math.floor(Math.random() * 8) + 1
     const heroInfo = hero[index]
     console.log(hero)
@@ -70,11 +76,13 @@ function Slider() {
 
   return (
     <Container>
-        <Image src='https://themanufacturer-cdn-1.s3.eu-west-2.amazonaws.com/wp-content/uploads/2018/07/14113818/Depositphotos_160634808_m-2015.jpg'/>
+        <ImageWrapper>
+            <Image src='https://themanufacturer-cdn-1.s3.eu-west-2.amazonaws.com/wp-content/uploads/2018/07/14113818/Depositphotos_160634808_m-2015.jpg'/>
+        </ImageWrapper>
         <Info>
             <Title>{heroInfo.title}</Title>
             <Description>{heroInfo.description}</Description>
-            <Button>{heroInfo.cta}</Button>
+            <Button onClick={() =>navigate("products/all")}>{heroInfo.cta}</Button>
         </Info>
     </Container>
   )
