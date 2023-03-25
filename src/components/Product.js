@@ -76,11 +76,11 @@ function Product(props) {
             setProducts(p => [...p, ...res.data]);
         }
       } catch (error) {
-        if(axios.isCancel(error)) { //req canceled by user
-          setProducts([])
-        } else {
-          dispatch(setError(error.response.data.message))
-        }          
+        if(error.response.status === 404) return dispatch(setError(error.response.data.message))
+        if(axios.isCancel(error)) return setProducts([]) //req canceled by user
+        
+        dispatch(setError(error.response.data.message))
+    
       }
     } 
     getProducts();

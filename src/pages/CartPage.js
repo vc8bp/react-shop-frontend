@@ -431,12 +431,12 @@ function CartPage(props) {
             (cartProductRes?.products.length
             ? <>
             <Top>
-                <TopButton >Continue Shopping</TopButton>
+                <TopButton onClick={() => navigate(-1)}>Continue Shopping</TopButton>
                 <TopTexts>
                     <TopText>Shopping ba</TopText>
                     <TopText>Your Wishlist</TopText>
                 </TopTexts>
-                <TopButton type="filled">CheckOut Now</TopButton>
+                <TopButton type="filled" onClick={handleCheckout} disabled={isCheckoutLoading? true : false}>CheckOut Now</TopButton>
             </Top>
             <Bottom>
                 <Info>    

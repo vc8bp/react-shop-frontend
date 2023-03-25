@@ -149,7 +149,7 @@ function SingUp(props) {
     if(!values.email) error.email = "email is requires"; 
     if(!values.password) error.password = "password is requires"; 
     if(!values.confirmPassword) error.cpassword = "confirm password is requires";
-    console.log(error.firstName, error.lastName, error.email, error.password)
+    if(values.password !== values.confirmPassword) error.cpassword = "Your password and Confirm password dosent matched";
     return error;
   }
   // const dispatch = useDispatch();

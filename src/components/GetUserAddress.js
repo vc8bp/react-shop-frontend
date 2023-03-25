@@ -10,7 +10,7 @@ const countries = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "An
 
 const StyledInput = styled.input`
   padding: 10px;
-  margin: 10px 0;
+  margin-bottom: 10px;
   font-size: 18px;
   width: 100%;
   box-sizing: border-box;
@@ -23,7 +23,7 @@ const StyledInput = styled.input`
 
 const Select = styled.select`
   padding: 10px;
-  margin: 10px 0;
+  margin-bottom: 10px;
   font-size: 18px;
   width: 100%;
   box-sizing: border-box;
@@ -37,16 +37,13 @@ const Select = styled.select`
 const StyledLabel = styled.label`
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   display: block;
 `;
 
 const StyledForm = styled.form`
   max-width: 600px;
   margin: 0 auto;
-  @media (max-width: 600px) {
-    width: 90%;
-  }
 `;
 
 const StyledButton = styled.button`
@@ -92,75 +89,73 @@ const GetUserAddress = ({isOpen, setModal}) => {
       dispatch(setError(error.response.data.message))
     }
     setModal(false)
-    console.log(address);
-    // send address to server or do something else
   };
 
   return (
     <ModalComp isOpen={isOpen}>
         <StyledForm onSubmit={handleSubmit}>
-        <StyledLabel>Street</StyledLabel>
-        <StyledInput
-            type="text"
-            name="street"
-            value={address.street}
-            onChange={handleChange}
-            placeholder="Enter street"
-            required
-            />
+          <StyledLabel>Street</StyledLabel>
+          <StyledInput
+              type="text"
+              name="street"
+              value={address.street}
+              onChange={handleChange}
+              placeholder="Enter street"
+              required
+              />
 
-        <StyledLabel>City</StyledLabel>
-        <StyledInput
-            type="text"
-            name="city"
-            value={address.city}
-            onChange={handleChange}
-            placeholder="Enter city"
-            required
-        />
+          <StyledLabel>City</StyledLabel>
+          <StyledInput
+              type="text"
+              name="city"
+              value={address.city}
+              onChange={handleChange}
+              placeholder="Enter city"
+              required
+          />
 
-        <StyledLabel>State</StyledLabel>
-        <StyledInput
-            type="text"
-            name="state"
-            value={address.state}
-            onChange={handleChange}
-            placeholder="Enter state"
-            required
-            />
+          <StyledLabel>State</StyledLabel>
+          <StyledInput
+              type="text"
+              name="state"
+              value={address.state}
+              onChange={handleChange}
+              placeholder="Enter state"
+              required
+              />
 
-        <StyledLabel>Zip</StyledLabel>
-        <StyledInput
-            type="text"
-            name="zip"
-            value={address.zip}
-            onChange={handleChange}
-            placeholder="Enter zip code"
-            required
-            />
+          <StyledLabel>Zip</StyledLabel>
+          <StyledInput
+              type="text"
+              name="zip"
+              value={address.zip}
+              onChange={handleChange}
+              placeholder="Enter zip code"
+              required
+              />
 
-            <StyledLabel>Country</StyledLabel>
-            <Select
-                name="country"
-                value={address.country}
-                onChange={handleChange}
-                required>
-                <option value="" disabled>Select a country</option>
-                {countries.map(country => <option key={country} value={country}>{country}</option>)}
-            </Select>
+              <StyledLabel>Country</StyledLabel>
+              <Select
+                  name="country"
+                  value={address.country}
+                  onChange={handleChange}
+                  required>
+                  <option value="" disabled>Select a country</option>
+                  {countries.map(country => <option key={country} value={country}>{country}</option>)}
+              </Select>
 
-            <StyledLabel>Mobile Number</StyledLabel>
-            <StyledInput
-                type="tel"
-                name="mobile"
-                value={address.mobile}
-                onChange={handleChange}
-                placeholder="Enter mobile number for delivery"
-                required
-            />
+              <StyledLabel>Mobile Number</StyledLabel>
+              <StyledInput
+                  type="tel"
+                  name="mobile"
+                  value={address.mobile}
+                  onChange={handleChange}
+                  placeholder="Enter mobile number for delivery"
+                  required
+              />
 
-        <StyledButton type="submit">Submit</StyledButton>
-        <StyledButton type="reset" onClick={() => setModal(false)}>Cancel</StyledButton>
+          <StyledButton type="submit">Submit</StyledButton>
+          <StyledButton type="reset" onClick={() => setModal(false)}>Cancel</StyledButton>
         </StyledForm>
 
     </ModalComp>

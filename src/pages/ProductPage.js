@@ -232,8 +232,10 @@ const Button = styled.button`
 
 
 function ProductPage(props) {
+    const navigate = useNavigate();
     const dispatch = useDispatch()
-    const [product, setProduct] = useState({})
+
+    const [product, setProduct] = useState(null)
     const [ProductQuentity, setProductQuentity] = useState(1)
     const [isLoading, setIsLoading] = useState(true)
     //const [error, setError] = useState(null)
@@ -265,7 +267,9 @@ function ProductPage(props) {
             const data = await publicRequest.get(`/api/products/info/${id}`, {cancelToken: ourRequest.token});
             setProduct(data.data);
             setIsLoading(false)  
+            
         } catch (error) {
+            if (error.response.status === 404) navigate("/")
             dispatch(setError(error.response.data.message))
             setIsLoading(false)  
         }     
@@ -283,9 +287,9 @@ function ProductPage(props) {
         if(type === "dec") setProductQuentity((prev) => ProductQuentity > 1 ? prev -1: prev)
         if(type === "inc") setProductQuentity((prev) => ProductQuentity < product.quantity ? prev +1: prev);
     } 
-    const navigate = useNavigate();
+
+
     //add to cart   
-    
     const user = useSelector(state => state.user.currentUser);   
 
     const handleSubClick = async () => { 
@@ -409,6 +413,7 @@ function ProductPage(props) {
       <Navbar/>
         {
             isLoading ? <Loading/> :            
+            product && 
             <>
             <Wrapper>    
             <ImgContainer>

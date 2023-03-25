@@ -30,7 +30,7 @@ const Container = styled.div`
     //sticky navbar
     position: sticky;
     top: 0;
-    z-index: 9999;
+    z-index: 101;
     //background-color: rgba(255,255,255,.8);
     backdrop-filter: blur(16px);
     
@@ -293,7 +293,7 @@ function Navbar() {
                          
                         
                 <MenueItem title='Cart'>
-                    {user && <Badge overlap="rectangular" badgeContent={cartSize} color="primary"> {/* used overlap="rectangular" bcz this error Failed prop type: Material-UI: `overlap="rectangle"` was deprecated.   */}
+                    {user && <Badge overlap="rectangular" badgeContent={cartSize === NaN ? 1 : cartSize} color="primary"> {/* used overlap="rectangular" bcz this error Failed prop type: Material-UI: `overlap="rectangle"` was deprecated.   */}
                         <Link style={link} to="/cart"><ShoppingCartOutlined/></Link>
                     </Badge>}
                 </MenueItem>
