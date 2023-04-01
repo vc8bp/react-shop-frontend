@@ -283,7 +283,7 @@ function Navbar() {
                         <Account>Account {optionIsOpen ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}</Account>
                             <DropdownList open={optionIsOpen}>
                                 <DropdownContainer onClick={(e) => e.stopPropagation()}>
-                                    <Dropdown><SettingsIcon/> Setting</Dropdown>
+                                    <Dropdown><SettingsIcon onClick={() => redirect("/setting")}/> Setting</Dropdown>
                                     <Dropdown onClick={() => redirect("/orders")}><LocalMallIcon/> Orders</Dropdown>
                                     <Dropdown onClick={handleLogout}><LogoutIcon/> Logout</Dropdown>
                                 </DropdownContainer>

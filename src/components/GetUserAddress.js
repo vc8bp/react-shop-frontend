@@ -129,6 +129,7 @@ const GetUserAddress = ({isOpen, setModal}) => {
               type="text"
               name="zip"
               value={address.zip}
+              pattern="^[1-9][0-9]{5}$"
               onChange={handleChange}
               placeholder="Enter zip code"
               required
@@ -150,6 +151,7 @@ const GetUserAddress = ({isOpen, setModal}) => {
                   name="mobile"
                   value={address.mobile}
                   onChange={handleChange}
+                  pattern="^0?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$"
                   placeholder="Enter mobile number for delivery"
                   required
               />

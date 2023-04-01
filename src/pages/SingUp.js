@@ -187,7 +187,7 @@ function SingUp(props) {
             <Input name='lastName' placeholder='Last Name' onChange={handleOnChange}/>
             <FormValidationError>{formErrors.lastName}</FormValidationError>
 
-            <Input name='number' type="number" placeholder='Phone Number' onChange={handleOnChange}/>
+            <Input name='number' type="tel" placeholder='Phone Number' onChange={handleOnChange} pattern="^0?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$"/>
             <FormValidationError>{formErrors.number}</FormValidationError>
 
             <Input name='email' type="email" placeholder='Email' onChange={handleOnChange} />
