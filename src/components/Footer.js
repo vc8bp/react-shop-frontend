@@ -93,7 +93,7 @@ function Footer() {
     <Container>
         
         <Left>
-            <Logo>Name.</Logo>
+            <Logo>{process.env.REACT_APP_NAME}</Logo>
             <Description>
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quod possimus, dolor placeat voluptate ipsam delectus repellendus, laborum sunt ratione id obcaecati repudiandae, adipisci nihil fugit autem dignissimos quo! Officia, corporis?
             </Description>

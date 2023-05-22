@@ -61,33 +61,28 @@ const StyledButton = styled.button`
   }
 `;
 
-const GetUserAddress = ({isOpen, setModal, prevAdd}) => {
+const UpdateUserPass = ({isOpen, setModal}) => {
     const user = useSelector(state => state.user.currentUser)
     const dispatch = useDispatch()
 
-    const [address, setAddress] = useState(prevAdd || {
-      street: "",
-      city: "",
-      state: "",
-      zip: "",
-      country: "",
-      mobile: user?.number || ""
+    const [formData, setFormData] = useState({
+      currentPass: "",
+      password: "",
+      confPass: ""
     });
 
-  const handleChange = e => { setAddress({ ...address, [e.target.name]: e.target.value }); };
+  const handleChange = e => { setFormData({ ...formData, [e.target.name]: e.target.value }); };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(formData.password !== formData.confPass) return dispatch(setError("Pasword and Confirm Passowrd Dosent matched!!"))
 
     try {
-        const q = prevAdd ? "update=true" : ""
-        dispatch(setReduxAddress(address))  
-        const {data } = await userRequest.post(`/api/user/address?${q}`, address)     
-        if(data.ok){
-          dispatch(setError("Address successfully updated"))
-        }
+        dispatch(setReduxAddress(formData))  
+        const {data } = await userRequest.put(`/api/users/${user._id}`, formData)     
+        dispatch(setError("Password updated Successfully!!"))
     } catch (error) {
-      dispatch(setError(error.response.data.message))
+      dispatch(setError(error.response.data.error))
     }
     setModal(false)
   };
@@ -95,67 +90,35 @@ const GetUserAddress = ({isOpen, setModal, prevAdd}) => {
   return (
     <ModalComp isOpen={isOpen}>
         <StyledForm onSubmit={handleSubmit}>
-          <StyledLabel>Street</StyledLabel>
+          <StyledLabel>Current Password: </StyledLabel>
           <StyledInput
               type="text"
-              name="street"
-              value={address.street}
+              name="currentPass"
+              value={formData.currentPass}
               onChange={handleChange}
-              placeholder="Enter street"
+              placeholder="Enter Current Password"
               required
               />
 
-          <StyledLabel>City</StyledLabel>
+          <StyledLabel>New Password: </StyledLabel>
           <StyledInput
               type="text"
-              name="city"
-              value={address.city}
+              name="password"
+              value={formData.password}
               onChange={handleChange}
-              placeholder="Enter city"
+              placeholder="Enter Password"
               required
           />
 
-          <StyledLabel>State</StyledLabel>
-          <StyledInput
-              type="text"
-              name="state"
-              value={address.state}
-              onChange={handleChange}
-              placeholder="Enter state"
-              required
-              />
-
-          <StyledLabel>Zip</StyledLabel>
-          <StyledInput
-              type="text"
-              name="zip"
-              value={address.zip}
-              pattern="^[1-9][0-9]{5}$"
-              onChange={handleChange}
-              placeholder="Enter zip code"
-              required
-              />
-
-              <StyledLabel>Country</StyledLabel>
-              <Select
-                  name="country"
-                  value={address.country}
-                  onChange={handleChange}
-                  required>
-                  <option value="" disabled>Select a country</option>
-                  {countries.map(country => <option key={country} value={country}>{country}</option>)}
-              </Select>
-
-              <StyledLabel>Mobile Number</StyledLabel>
-              <StyledInput
-                  type="tel"
-                  name="mobile"
-                  value={address.mobile}
-                  onChange={handleChange}
-                  pattern="^0?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$"
-                  placeholder="Enter mobile number for delivery"
-                  required
-              />
+            <StyledLabel>Confirm Password: </StyledLabel>
+            <StyledInput
+                type="text"
+                name="confPass"
+                value={formData.confPass}
+                onChange={handleChange}
+                placeholder="Enter Confirm Password"
+                required
+            />
 
           <StyledButton type="submit">Submit</StyledButton>
           <StyledButton type="reset" onClick={() => setModal(false)}>Cancel</StyledButton>
@@ -165,4 +128,4 @@ const GetUserAddress = ({isOpen, setModal, prevAdd}) => {
   );
 };
 
-export default GetUserAddress;
+export default UpdateUserPass;

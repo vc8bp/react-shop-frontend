@@ -1,12 +1,16 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import styled from 'styled-components';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import NewsLetter from '../components/NewsLetter';
-import { useSelector } from 'react-redux'
-import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+import {setError} from "../redux/errorRedux"
+import { userRequest } from '../axiosReqMethods';
+import { setAddress, updateUser } from '../redux/userRedux';
+import GetUserAddress from '../components/GetUserAddress';
+import UpdateUserPass from '../components/UpdatePassword';
 
 const Container = styled.div`
   display: flex;
@@ -130,35 +134,49 @@ const navMap = {
 
 
 const UserSettings = () => {
-  const [isActivated, setIsActivated] = useState(1)
-  const user = useSelector(s => s.user.currentUser);
-  const {firstName, lastName, email, number} = user;
+    const userAddress = useSelector(state => state.user.address)   
+    const dispatch = useDispatch()
+    const [isActivated, setIsActivated] = useState(1)
+    const user = useSelector(s => s.user.currentUser);
+    const {firstName, lastName, email, number} = user;
 
-  const [userDataForm, setUserDataForm] = useState({firstName, lastName, email, number})
+    const [userDataForm, setUserDataForm] = useState({firstName, lastName, email, number})
 
-  const handleInputChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setUserDataForm(p => ({...p, [name]: value}))
+    const handleInputChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setUserDataForm(p => ({...p, [name]: value}))
+    }
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault()
+    try {
+        const {data} = await userRequest.put(`/api/users/${user._id}`, userDataForm)
+        dispatch(setError("Profile updated Successfully!!"))
+        dispatch(updateUser(data))
+    } catch (error) {
+        console.log(error)
+        dispatch(setError("Failed to updated Profile!!"))
+    }
   }
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const userAddress = useSelector(state => state.user.address)   
-  //     if(!userAddress){  //if address is not stored in users local storage then get from db
-  //         try {
-  //             const {data} = await req.get("/api/user/address")
-  //             console.log(data)
-  //             if(!data.ok){
-  //                 return setaddmodalIsOpen(true);
-  //             }
-  //             dispatch(setAddress(data.address))  //setting address wh to redux       
-  //         } catch (error) {
-  //             return setaddmodalIsOpen(true)
-  //         }
-  //     }
-  //   })()
-  // }, [])
+  //address
+  const [isAddressOpen, setAddressOpen] = useState(false)
+    
+  useEffect(() => {
+    if(userAddress) return 
+    (async() => {
+        try {
+            const {data} = await userRequest.get("/api/user/address")
+            dispatch(setAddress(data.address))
+        } catch (error) {
+            dispatch(setError("Failed to fetch Address!!"));
+        }
+    })()
+  })
+
+  //password
+  const [isEditPassOpen, setIsEditPassOpen] = useState(false)
   
   return (
     <>
@@ -174,7 +192,7 @@ const UserSettings = () => {
           <Content>
             <Title>{navMap[isActivated]}</Title>
             {isActivated === 1 &&
-                        <form>
+                        <form onSubmit={handleUpdateProfile}>
                         <p>First name</p>
                         <Input
                           type="text"
@@ -208,7 +226,7 @@ const UserSettings = () => {
                           onChange={handleInputChange}
                         />
                         <p>Password</p>
-                        <FakeInput>************* <Edit>Edit</Edit></FakeInput>
+                        <FakeInput>************* <Edit onClick={() => setIsEditPassOpen(true)} >Edit</Edit></FakeInput>
                         <Button type="submit">Save Changes</Button>
                       </form>
               }
@@ -216,17 +234,19 @@ const UserSettings = () => {
             <AddressContainer>
               <AddressMain>
                 <p>Default Delivery Address</p>
-                <p>vivek chaturvedi</p>
-                <p>dahisar, sdfsdf, mumbai</p>
-                <p>mumbai, 400068</p>
+                <p>{`${user.firstName} ${user.lastName}`}</p>
+                <p>{`${userAddress.street}, ${userAddress.city}, ${userAddress.state}, ${userAddress.country}`}</p>
+                <p>{`${userAddress.city}, ${userAddress.zip}`}</p>
               </AddressMain>
-              <Edit>Edit</Edit>
+              <Edit onClick={() => setAddressOpen(true)} >Edit</Edit>
             </AddressContainer>
             }
           </Content>
           </MainSection>
         </Wrapper>
       </Container>
+      <GetUserAddress isOpen={isAddressOpen} setModal={setAddressOpen} prevAdd={userAddress} />
+      <UpdateUserPass isOpen={isEditPassOpen} setModal={setIsEditPassOpen} />
       <NewsLetter />
       <Footer />
     </>

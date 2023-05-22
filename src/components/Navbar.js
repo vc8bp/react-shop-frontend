@@ -261,7 +261,7 @@ function Navbar() {
     <Container>
         <Wrapper>
             <Left>
-                <Logo><Link onClick={() => redirect("/")} style={link} to="/">Title.</Link></Logo>
+                <Logo><Link onClick={() => redirect("/")} style={link} to="/">{process.env.REACT_APP_NAME}</Link></Logo>
             </Left>
             <Center>
             <SearchContainer>
@@ -283,7 +283,7 @@ function Navbar() {
                         <Account>Account {optionIsOpen ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}</Account>
                             <DropdownList open={optionIsOpen}>
                                 <DropdownContainer onClick={(e) => e.stopPropagation()}>
-                                    <Dropdown><SettingsIcon onClick={() => redirect("/setting")}/> Setting</Dropdown>
+                                    <Dropdown onClick={() => redirect("/setting")}><SettingsIcon/> Setting</Dropdown>
                                     <Dropdown onClick={() => redirect("/orders")}><LocalMallIcon/> Orders</Dropdown>
                                     <Dropdown onClick={handleLogout}><LogoutIcon/> Logout</Dropdown>
                                 </DropdownContainer>
